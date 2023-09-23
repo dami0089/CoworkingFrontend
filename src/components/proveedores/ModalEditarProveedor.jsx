@@ -3,17 +3,11 @@ import { Dialog, Transition } from "@headlessui/react";
 import useProveedores from "../../hooks/useProveedores";
 
 import { ToastContainer, toast } from "react-toastify";
-import { Checkbox } from "@material-tailwind/react";
-import clienteAxios from "@/configs/clinteAxios";
-import { ArrowLeftCircleIcon } from "@heroicons/react/24/solid";
 
 const TIPO = ["A", "B", "C"];
 
-const ModalNuevoProveedor = () => {
+const ModalEditarProveedor = () => {
   const {
-    modalNuevoProveedor,
-    handleModalNuevoProveedor,
-    onClose,
     tipoProveedor,
     setTipoProveedor,
     nombreProveedor,
@@ -24,79 +18,15 @@ const ModalNuevoProveedor = () => {
     setEmailProveedor,
     cuitProveedor,
     setCuitProveedor,
-    guardarProveedor,
-    averiguarData,
+    modalEditarProveedor,
+    handleEditarProveedor,
+    editarProveedor,
     telefonoProveedor,
     setTelefonoProveedor,
+    idEditarProveedor,
+    actualizoProveedor,
+    setActualizoProveedor,
   } = useProveedores();
-
-  //Consultamos la base de datos para saber si el proveedor ya esta registrado antes. Si no esta registrado cierra el modal y pasa al modal2
-  const consultarBase = async (cuit) => {
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) return;
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      };
-
-      await clienteAxios.post(`/proveedores/comprobar`, { cuit }, config);
-
-      guardarProveedor({
-        tipo: tipoProveedor,
-        nombre: nombreProveedor,
-        cuit: cuitProveedor,
-        domicilio: domicilioProveedor,
-        email: emailProveedor,
-        telefono: telefonoProveedor,
-      });
-    } catch (error) {
-      toast.error(error.response.data.msg, {
-        position: "top-right",
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
-    }
-  };
-
-  // const consultarAfip = async (cuit) => {
-  //   try {
-  //     const token = localStorage.getItem("token");
-  //     if (!token) return;
-  //     const config = {
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         Authorization: `Bearer ${token}`,
-  //       },
-  //     };
-
-  //     const { data } = await clienteAxios.post(
-  //       `/proveedores/comprobarAfip`,
-  //       { cuit },
-  //       config
-  //     );
-
-  //     console.log(data);
-  //   } catch (error) {
-  //     toast.error(error.response.data.msg, {
-  //       position: "top-right",
-  //       autoClose: 2000,
-  //       hideProgressBar: false,
-  //       closeOnClick: true,
-  //       pauseOnHover: true,
-  //       draggable: true,
-  //       progress: undefined,
-  //       theme: "light",
-  //     });
-  //   }
-  // };
 
   //Comprueba que todos los campos esten ok, y de ser asi pasa a consultar si el cuit no corresponde a un usuario ya registrado
   const handleSubmit = async (e) => {
@@ -123,16 +53,33 @@ const ModalNuevoProveedor = () => {
       });
       return;
     }
-    // consultarAfip(cuitProveedor);
-    await consultarBase(cuitProveedor);
+
+    await editarProveedor(
+      tipoProveedor,
+      nombreProveedor,
+      emailProveedor,
+      cuitProveedor,
+      domicilioProveedor,
+      telefonoProveedor,
+      idEditarProveedor
+    );
+
+    setTipoProveedor("");
+    setNombreProveedor("");
+    setEmailProveedor("");
+    setCuitProveedor("");
+    setDomicilioProveedor("");
+    setTelefonoProveedor("");
+    handleEditarProveedor();
+    setActualizoProveedor(true);
   };
 
   return (
-    <Transition.Root show={modalNuevoProveedor} as={Fragment}>
+    <Transition.Root show={modalEditarProveedor} as={Fragment}>
       <Dialog
         as="div"
         className="fixed inset-0 z-10 overflow-y-auto"
-        onClose={handleModalNuevoProveedor}
+        onClose={handleEditarProveedor}
       >
         <div className="flex min-h-screen items-end justify-center px-4 pt-4 pb-20 text-center sm:block sm:p-0">
           <ToastContainer pauseOnFocusLoss={false} />
@@ -171,7 +118,7 @@ const ModalNuevoProveedor = () => {
                 <button
                   type="button"
                   className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                  onClick={onClose}
+                  onClick={handleEditarProveedor}
                 >
                   <span className="sr-only">Cerrar</span>
                   <svg
@@ -195,7 +142,7 @@ const ModalNuevoProveedor = () => {
                     as="h3"
                     className="text-xl font-bold leading-6 text-gray-900"
                   >
-                    Nuevo Proveedor
+                    Editar Proveedor
                   </Dialog.Title>
 
                   <form className="my-2 mx-2" onSubmit={handleSubmit}>
@@ -316,4 +263,4 @@ const ModalNuevoProveedor = () => {
   );
 };
 
-export default ModalNuevoProveedor;
+export default ModalEditarProveedor;

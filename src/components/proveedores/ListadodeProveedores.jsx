@@ -22,14 +22,16 @@ const ListadoDeProveedores = () => {
     obtenerProveedores,
     setSelectProveedores,
     selectProveedores,
+    idEditarProveedor,
+    setIdEditarProveedor,
   } = useProveedores();
 
   const navigate = useNavigate();
 
   const handleClick = async (e, _id) => {
-    // e.preventDefault();
-    // await setCuitEditar(_id);
-    // setSeleccion(5);
+    e.preventDefault();
+    await setIdEditarProveedor(_id);
+    setSelectProveedores(3);
   };
 
   useEffect(() => {
@@ -129,18 +131,6 @@ const ListadoDeProveedores = () => {
                           className="font-medium capitalize"
                         >
                           ver
-                        </Typography>
-                      </Button>
-                      <Button
-                        color="gradient"
-                        className="items-center gap-4 px-6 capitalize"
-                        fullWidth
-                      >
-                        <Typography
-                          color="inherit"
-                          className="font-medium capitalize"
-                        >
-                          editar
                         </Typography>
                       </Button>
                     </Typography>

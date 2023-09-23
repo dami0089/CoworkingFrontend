@@ -36,19 +36,23 @@ import ModalNuevoMovimiento from "@/components/proveedores/ModalNuevoMovimiento"
 import ListadodeFacturasAPagar from "@/components/proveedores/ListadodeFacturasAPagar";
 import ModalNuevoPago from "@/components/proveedores/ModalNuevoPago";
 import { ToastContainer } from "react-toastify";
+import ProfileProveedor from "@/components/proveedores/ProfileProveedor";
+import ModalEditarProveedor from "@/components/proveedores/ModalEditarProveedor";
+import ModalCargarFacturaProveedor from "@/components/proveedores/ModalCargarFacturaProveedor";
 
 export function Proveedores() {
   const {
     handleModalNuevoProveedor,
     handleModalNuevoRubro,
     handleModalCargarFactura,
-
     modalNuevoProveedor,
     modalNuevoRubro,
     modalNuevoMovimiento,
     modalNuevoPago,
     selectProveedores,
     setSelectProveedores,
+    modalEditarProveedor,
+    modalCargarFactura,
   } = useProveedores();
 
   const handleClick = () => {
@@ -89,7 +93,7 @@ export function Proveedores() {
 
             <div
               className="w-1/3 p-2 hover:cursor-pointer"
-              // onClick={(e) => handlePlanesActivos()}
+              onClick={(e) => handleModalCargarFactura()}
             >
               <div className="rounded-2xl bg-white p-4 shadow-lg dark:bg-gray-800">
                 <div className="flex flex-row items-center justify-between gap-4">
@@ -152,6 +156,8 @@ export function Proveedores() {
         </>
       ) : selectProveedores == 2 ? (
         <ListadoDeProveedores />
+      ) : selectProveedores == 3 ? (
+        <ProfileProveedor />
       ) : (
         ""
       )}
@@ -160,6 +166,8 @@ export function Proveedores() {
       {modalNuevoRubro ? <ModalNuevoRubro /> : ""}
       {modalNuevoMovimiento ? <ModalNuevoMovimiento /> : ""}
       {modalNuevoPago ? <ModalNuevoPago /> : ""}
+      {modalEditarProveedor ? <ModalEditarProveedor /> : ""}
+      {modalCargarFactura ? <ModalCargarFacturaProveedor /> : ""}
     </>
   );
 }

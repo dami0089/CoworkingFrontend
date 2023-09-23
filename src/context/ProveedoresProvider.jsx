@@ -48,8 +48,16 @@ const ProveedoresProvider = ({ children }) => {
   const [idProveedorPago, setIdProveedorPago] = useState("");
   const [idFacturaAPagar, setIdFacturaAPagar] = useState("");
   const [selectProveedores, setSelectProveedores] = useState(1);
+  const [idEditarProveedor, setIdEditarProveedor] = useState("");
+  const [modalEditarProveedor, setModalEditarProveedor] = useState(false);
+  const [telefonoProveedor, setTelefonoProveedor] = useState("");
+  const [actualizoProveedor, setActualizoProveedor] = useState(false);
 
   const { auth } = useAuth();
+
+  const handleEditarProveedor = () => {
+    setModalEditarProveedor(!modalEditarProveedor);
+  };
 
   // Este effect esta para buscar ej la base el listado de clientes al abrir la seccion clientes
 
@@ -66,6 +74,26 @@ const ProveedoresProvider = ({ children }) => {
 
       const { data } = await clienteAxios("/proveedores", config);
       setProveedores(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const [proveedor, setProveedor] = useState({});
+
+  const obtenerProveedor = async (id) => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      const { data } = await clienteAxios(`/proveedores/obtener/${id}`, config);
+      setProveedor(data);
     } catch (error) {
       console.log(error);
     }
@@ -108,9 +136,6 @@ const ProveedoresProvider = ({ children }) => {
     setModalCargarFactura(!modalCargarFactura);
   };
 
-  const handleModalNuevoRubro = () => {
-    setModalNuevoRubro(!modalNuevoRubro);
-  };
   //   //abre o cierra el modal resumen
 
   //   //cierra el modal cliente 2
@@ -126,22 +151,6 @@ const ProveedoresProvider = ({ children }) => {
     }).then((result) => {
       if (result.isConfirmed) {
         handleModalNuevoProveedor();
-      }
-    });
-  };
-
-  const onCloseModalRubro = () => {
-    Swal.fire({
-      title: "Seguro queres cerrar?",
-      text: "Toda la info se borrara!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Salir",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        handleModalNuevoRubro();
       }
     });
   };
@@ -245,28 +254,24 @@ const ProveedoresProvider = ({ children }) => {
     }
   };
 
-  useEffect(() => {
-    const obtenerRubros = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) return;
-        const config = {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        };
-
-        const { data } = await clienteAxios("/rubros", config);
-        setRubros(data);
-      } catch (error) {
-        console.log(error);
-      }
+  const editarProveedor = async (
+    tipo,
+    nombre,
+    email,
+    cuit,
+    domicilio,
+    telefono,
+    id
+  ) => {
+    console.log(id);
+    const info = {
+      tipo,
+      nombre,
+      email,
+      cuit,
+      domicilio,
+      telefono,
     };
-    obtenerRubros();
-  }, []);
-
-  const nuevoRubro = async (nombre) => {
     try {
       const token = localStorage.getItem("token");
       if (!token) return;
@@ -278,9 +283,13 @@ const ProveedoresProvider = ({ children }) => {
         },
       };
 
-      await clienteAxios.post("/rubros", nombre, config);
+      await clienteAxios.post(
+        `/proveedores/editar-proveedor/${id}`,
+        info,
+        config
+      );
 
-      toast.success("Rubro creado correctamente", {
+      toast.success("Proveedor Editado Correctamente", {
         position: "top-right",
         autoClose: 1500,
         hideProgressBar: false,
@@ -290,11 +299,6 @@ const ProveedoresProvider = ({ children }) => {
         progress: undefined,
         theme: "light",
       });
-      setTimeout(() => {
-        setNombreRubro("");
-        handleModalNuevoRubro();
-        // navigate("/inicio/proveedores");
-      }, 1000);
     } catch (error) {
       toast.error(error, {
         position: "top-right",
@@ -316,9 +320,7 @@ const ProveedoresProvider = ({ children }) => {
         handleModalNuevoProveedor,
         modalCargarFactura,
         handleModalCargarFactura,
-        modalNuevoRubro,
-        handleModalNuevoRubro,
-        onCloseModalRubro,
+
         onClose,
         onCloseCargarFactura,
         seleccionProveedor,
@@ -335,7 +337,7 @@ const ProveedoresProvider = ({ children }) => {
         setCuitProveedor,
         nombreRubro,
         setNombreRubro,
-        nuevoRubro,
+
         rubros,
         guardarProveedor,
         proveedores,
@@ -365,6 +367,17 @@ const ProveedoresProvider = ({ children }) => {
         obtenerProveedores,
         selectProveedores,
         setSelectProveedores,
+        idEditarProveedor,
+        setIdEditarProveedor,
+        proveedor,
+        obtenerProveedor,
+        modalEditarProveedor,
+        handleEditarProveedor,
+        editarProveedor,
+        telefonoProveedor,
+        setTelefonoProveedor,
+        actualizoProveedor,
+        setActualizoProveedor,
       }}
     >
       {children}
