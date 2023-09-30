@@ -17,6 +17,7 @@ import {
   ClockIcon,
   CurrencyDollarIcon,
   DocumentPlusIcon,
+  FingerPrintIcon,
   HandThumbDownIcon,
   PlusCircleIcon,
   QueueListIcon,
@@ -44,6 +45,8 @@ import ListadoAsistenciasProfile from "@/components/clientes/ListadoAsistenciasP
 import ModalEditarAsistencia from "@/components/clientes/ModalEditarAsistencia";
 import ModalEditarUsuario from "@/components/clientes/ModalEditarUsuario";
 import ModalEliminarUsuario from "@/components/clientes/ModalEliminarUsuario";
+import QrScanner from "@/components/clientes/RegistrarClientes";
+import RegistrarClientes from "@/components/clientes/RegistrarClientes";
 
 export function Clientes() {
   const {
@@ -220,7 +223,7 @@ export function Clientes() {
 
           <div className="mt-5 flex flex-wrap justify-between">
             <div
-              className="w-1/3 p-2 hover:cursor-pointer"
+              className="w-1/2 p-2 hover:cursor-pointer"
               onClick={(e) => setSeleccion(7)}
             >
               <div className="rounded-2xl bg-white p-4 shadow-lg dark:bg-gray-800">
@@ -233,6 +236,25 @@ export function Clientes() {
                   <div className="flex flex-col">
                     <span className="text-lg font-medium text-gray-600 dark:text-white">
                       Clientes inactivos
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              className="w-1/2 p-2 hover:cursor-pointer"
+              onClick={(e) => setSeleccion(10)}
+            >
+              <div className="rounded-2xl bg-white p-4 shadow-lg dark:bg-gray-800">
+                <div className="flex flex-row items-center justify-between gap-4">
+                  <div className="flex-shrink-0">
+                    <a href="#" className="relative block">
+                      <FingerPrintIcon className="mx-auto h-8 w-8 rounded-full object-cover" />
+                    </a>
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-lg font-medium text-gray-600 dark:text-white">
+                      Ingresar Visitante
                     </span>
                   </div>
                 </div>
@@ -286,6 +308,12 @@ export function Clientes() {
         <div className=" mb-4 mt-10 grid grid-cols-1 gap-6  xl:grid-cols-3">
           <Card className="overflow-hidden xl:col-span-3">
             <ListadoAsistenciasProfile />
+          </Card>
+        </div>
+      ) : seleccion == 10 ? (
+        <div className=" mb-1 mt-4 grid grid-cols-1 gap-6  xl:grid-cols-3">
+          <Card className="overflow-hidden xl:col-span-3">
+            <RegistrarClientes />
           </Card>
         </div>
       ) : (

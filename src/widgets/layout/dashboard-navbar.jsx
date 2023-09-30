@@ -69,7 +69,7 @@ export function DashboardNavbar() {
 
   useEffect(() => {
     const socket = io("http://localhost:3000");
-    // const socket = io("http://54.197.132.60:3000");
+    // const socket = io("http://34.235.146.116:3000");
 
     socket.on("connection-successful", () => {
       console.log("Connection with WhatsApp is successful!");

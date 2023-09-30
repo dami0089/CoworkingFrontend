@@ -30,7 +30,7 @@ export function Home() {
           <StatisticsCard
             key="Facturado Hoy"
             title="Nuevo Usuario"
-            icon=<UserPlusIcon className=" bg-blue-300" />
+            icon={<UserPlusIcon className=" bg-blue-300" />}
             footer={
               <Typography className="font-normal text-blue-gray-600">
                 <strong className="text-green-500">
@@ -44,7 +44,7 @@ export function Home() {
         <StatisticsCard
           key="Total de Clientes"
           title="Total de Clientes"
-          icon=<UserIcon className=" bg-pink-300" />
+          icon={<UserIcon className=" bg-pink-300" />}
           footer={
             <Typography className="font-normal text-blue-gray-600">
               <strong className="text-green-500">{conteo}</strong>
@@ -55,7 +55,7 @@ export function Home() {
         <StatisticsCard
           key="Nuevos clientes"
           title="Nuevos clientes"
-          icon=<UserPlusIcon className="bg-green-300" />
+          icon={<UserPlusIcon className="bg-green-300" />}
           footer={
             <Typography className="font-normal text-blue-gray-600">
               <strong className="text-green-500">{clientesRecientes}</strong>
@@ -66,7 +66,7 @@ export function Home() {
         <StatisticsCard
           key="Facturado mes"
           title="Facturado mes"
-          icon=<ChartBarIcon className="bg-orange-300" />
+          icon={<ChartBarIcon className="bg-orange-300" />}
           footer={
             <Typography className="font-normal text-blue-gray-600">
               <strong className="text-green-500">+55%</strong>

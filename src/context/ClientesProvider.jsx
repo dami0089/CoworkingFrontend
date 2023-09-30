@@ -89,6 +89,16 @@ const ClientesProvider = ({ children }) => {
   const [renovarListadoAsistenciaProfile, setRenovarListadoAsistenciaProfile] =
     useState(false);
 
+  const [nombreVisitante, setNombreVisitante] = useState("");
+  const [dniVisitante, setDniVisitante] = useState("");
+  const [fechaNacVisitante, setFechaNacVisitante] = useState("");
+  const [nacionalidadVisitante, setNacionalidadVisitante] = useState("");
+  const [celuVisitante, setCeluVisitante] = useState("");
+  const [mailVisitante, setMailVisitante] = useState("");
+  const [motivoVisita, setMotivoVisita] = useState("");
+  const [actualizarListadoVisitante, setActualizarListadoVisitante] =
+    useState(false);
+
   const handleModalNuevoUsuario = () => {
     setModalNuevoUsuario(!modalNuevoUsuario);
   };
@@ -1192,6 +1202,84 @@ const ClientesProvider = ({ children }) => {
     }
   };
 
+  const registrarVisitante = async (
+    nombre,
+    dni,
+    nacionalidad,
+    fechaNac,
+    celular,
+    email,
+    motivo
+  ) => {
+    const info = {
+      nombre: nombre,
+      dni: dni,
+      nacionalidad: nacionalidad,
+      fechaNac: fechaNac,
+      celular: celular,
+      email: email,
+      motivo: motivo,
+    };
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      await clienteAxios.post("/clientes/registrar-visitante", info, config);
+
+      toast.success("Registro Exitoso", {
+        position: "top-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    } catch (error) {
+      toast.error("Error al registrar visitante", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+  };
+
+  const [visitas, setVisitas] = useState([]);
+
+  const obtenerVisitas = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      const { data } = await clienteAxios(
+        "/clientes/obtener-visitantes",
+        config
+      );
+
+      setVisitas(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <ClientesContext.Provider
       value={{
@@ -1365,6 +1453,25 @@ const ClientesProvider = ({ children }) => {
         setActualizoUsuarios,
         renovarListadoAsistenciaProfile,
         setRenovarListadoAsistenciaProfile,
+        nombreVisitante,
+        setNombreVisitante,
+        fechaNacVisitante,
+        setFechaNacVisitante,
+        nacionalidadVisitante,
+        setNacionalidadVisitante,
+        celuVisitante,
+        setCeluVisitante,
+        mailVisitante,
+        setMailVisitante,
+        motivoVisita,
+        setMotivoVisita,
+        dniVisitante,
+        setDniVisitante,
+        registrarVisitante,
+        visitas,
+        obtenerVisitas,
+        actualizarListadoVisitante,
+        setActualizarListadoVisitante,
       }}
     >
       {children}
