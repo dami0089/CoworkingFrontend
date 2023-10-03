@@ -39,6 +39,7 @@ const RegistrarClientes = () => {
         .decodeFromInputVideoDevice(undefined, videoRef.current)
         .then((result) => {
           //   setData(result.getText());
+          console.log(result);
           extractData(result.getText());
           setIsScanning(false); // Detener el escaneo después de obtener un resultado
         })
@@ -87,6 +88,16 @@ const RegistrarClientes = () => {
     setActualizarListadoVisitante(true);
   };
 
+  const handleScan = (e) => {
+    e.preventDefault();
+    if (isScanning) {
+      setIsScanning(false);
+      setError("");
+    } else {
+      setIsScanning(true);
+    }
+  };
+
   return (
     <>
       <div className="ml-3 mt-3">
@@ -120,7 +131,7 @@ const RegistrarClientes = () => {
             />
           )}
           <button
-            onClick={() => setIsScanning(!isScanning)}
+            onClick={(e) => handleScan(e)}
             className="mt-3 rounded bg-blue-500 py-1 px-3 font-bold text-white hover:bg-blue-700"
           >
             Scan DNI
@@ -223,7 +234,6 @@ const RegistrarClientes = () => {
             >
               Registrar Visitante
             </button>
-            <p className="mt-2 text-xs italic text-red-500">{error}</p>
           </div>
         </div>
       </div>
