@@ -51,7 +51,7 @@ import ListadoMercadoPago from "@/components/contable/ListadoMercadoPago";
 import ListadoCaja from "@/components/contable/ListadoCaja";
 import ListadoCripto from "@/components/contable/ListadoCripto";
 import ModalNuevoMovimiento from "@/components/proveedores/ModalNuevoMovimiento";
-import ModalEditarMovimiento from "@/components/contable/ModalEditarMovimiento";
+import ModalEditarMovimientos from "@/components/contable/ModalEditarMovimientos";
 import { ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
@@ -131,11 +131,11 @@ export function Contable() {
       let totalG = 0;
       let totalB = 0;
       movimientos.forEach((movimiento) => {
-        if (movimiento.tipo == "Ingreso" && movimiento.entidad == "MP") {
+        if (movimiento.tipo == "Ingreso" && movimiento.entidad == "Mp") {
           precio = parseFloat(movimiento.precioNeto);
           total += precio;
         }
-        if (movimiento.tipo == "Gasto" && movimiento.entidad == "MP") {
+        if (movimiento.tipo == "Gasto" && movimiento.entidad == "Mp") {
           precioG = parseFloat(movimiento.precioNeto);
           totalG += precioG;
           // setMovimientoGastoBanco(total);

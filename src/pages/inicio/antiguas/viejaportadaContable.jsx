@@ -42,7 +42,7 @@ import ListadoMercadoPago from "@/components/contable/ListadoMercadoPago";
 import ListadoCaja from "@/components/contable/ListadoCaja";
 import ListadoCripto from "@/components/contable/ListadoCripto";
 import ModalNuevoMovimiento from "@/components/proveedores/ModalNuevoMovimiento";
-import ModalEditarMovimiento from "@/components/contable/ModalEditarMovimiento";
+import ModalEditarMovimientos from "@/components/contable/ModalEditarMovimientos";
 
 export function Contable() {
   const {

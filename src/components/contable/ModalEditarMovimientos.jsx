@@ -6,7 +6,7 @@ import useClientes from "@/hooks/useClientes";
 import useProveedores from "@/hooks/useProveedores";
 import { input } from "@material-tailwind/react";
 
-const ModalNuevoMovimiento = () => {
+const ModalNuevoMovimientos = () => {
   const {
     handleModalNuevoMovimiento,
     modalNuevoMovimiento,
@@ -32,7 +32,23 @@ const ModalNuevoMovimiento = () => {
     nuevoGasto,
     renderMovimiento,
     setRenderMovimiento,
+    modalEditarMovimiento,
+    handleModalEditarMovimiento,
+    idMovimiento,
+    setIdMovimiento,
+    editarMovimiento,
   } = useContable();
+
+  const handleCloseModal = () => {
+    setTipo("");
+    setEntidad("");
+    setIdCliente("");
+    setIdProveedor("");
+    setDescripcion("");
+    setPrecioNeto("");
+    setIdMovimiento("");
+    handleModalEditarMovimiento();
+  };
 
   useEffect(() => {
     const traerData = async () => {
@@ -51,6 +67,32 @@ const ModalNuevoMovimiento = () => {
   const { proveedores, obtenerProveedores } = useProveedores();
 
   const { clientes, obtenerClientes } = useClientes();
+
+  useEffect(() => {
+    console.log(idCliente);
+  }, [idCliente]);
+
+  useEffect(() => {
+    // Busca el cliente basado en el ID
+    const clienteSeleccionado = clientes.find(
+      (cliente) => cliente._id === idCliente
+    );
+    if (clienteSeleccionado) {
+      setNombreCliente(clienteSeleccionado.nombre);
+    } else {
+      setNombreCliente("Cliente no encontrado");
+    }
+
+    // Busca el proveedor basado en el ID
+    const proveedorSeleccionado = proveedores.find(
+      (proveedor) => proveedor._id === idProveedor
+    );
+    if (proveedorSeleccionado) {
+      setNombreProveedor(proveedorSeleccionado.nombre);
+    } else {
+      setNombreProveedor("Proveedor no encontrado");
+    }
+  }, []);
 
   const [clientesFiltrados, setClientesFiltrados] = useState([]);
   const [nombreCliente, setNombreCliente] = useState("");
@@ -77,7 +119,7 @@ const ModalNuevoMovimiento = () => {
     const coincidencias = proveedores.filter((proveedor) =>
       proveedor.nombre.toLowerCase().includes(inputValue.toLowerCase())
     );
-    console.log(coincidencias);
+
     setProveedoresFiltrados(coincidencias);
   };
 
@@ -100,11 +142,12 @@ const ModalNuevoMovimiento = () => {
       return;
     }
     if (tipo == "Ingreso") {
-      await nuevoGasto({
+      await editarMovimiento({
+        id: idMovimiento,
         entidad: entidad,
         tipo: tipo,
         descripcion: descripcion,
-        precioNeto: precioNeto,
+        precioBruto: precioBruto,
         cliente: idCliente,
       });
       setRenderMovimiento(true);
@@ -112,7 +155,8 @@ const ModalNuevoMovimiento = () => {
         handleModalNuevoMovimiento();
       }, 600);
     } else {
-      await nuevoGasto({
+      await editarMovimiento({
+        id: idMovimiento,
         entidad: entidad,
         tipo: tipo,
         descripcion: descripcion,
@@ -120,27 +164,16 @@ const ModalNuevoMovimiento = () => {
         proveedor: idProveedor,
       });
       setRenderMovimiento(true);
-      setTimeout(() => {
-        handleModalNuevoMovimiento();
-      }, 600);
+      handleCloseModal();
     }
   };
 
-  // useEffect(() => {
-  //   let preciob = parseFloat(precioBruto);
-  //   let valorIVA = (preciob * 21) / 100;
-  //   let PrecioN = parseFloat((preciob + valorIVA).toFixed(2));
-
-  //   setIva(valorIVA.toFixed(2));
-  //   setPrecioNeto(PrecioN);
-  // }, [precioBruto]);
-
   return (
-    <Transition.Root show={modalNuevoMovimiento} as={Fragment}>
+    <Transition.Root show={modalEditarMovimiento} as={Fragment}>
       <Dialog
         as="div"
         className="fixed inset-0 z-10 overflow-y-auto"
-        onClose={handleModalNuevoMovimiento}
+        onClose={handleCloseModal}
       >
         <div className="flex min-h-screen items-end justify-center px-4 pb-20 pt-4 text-center sm:block sm:p-0">
           <ToastContainer pauseOnFocusLoss={false} />
@@ -179,7 +212,7 @@ const ModalNuevoMovimiento = () => {
                 <button
                   type="button"
                   className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                  onClick={handleCloseModalMovimientos}
+                  onClick={handleCloseModal}
                 >
                   <span className="sr-only">Cerrar</span>
                   <svg
@@ -203,7 +236,7 @@ const ModalNuevoMovimiento = () => {
                     as="h3"
                     className="text-xl font-bold leading-6 text-gray-900"
                   >
-                    Nuevo Movimiento
+                    Editar Movimiento
                   </Dialog.Title>
 
                   <form className="mx-2 my-2" onSubmit={handleSubmit}>
@@ -385,7 +418,6 @@ const ModalNuevoMovimiento = () => {
                           >
                             Descripcion
                           </label>
-
                           <input
                             id="descripcion"
                             type="text"
@@ -433,4 +465,4 @@ const ModalNuevoMovimiento = () => {
   );
 };
 
-export default ModalNuevoMovimiento;
+export default ModalNuevoMovimientos;

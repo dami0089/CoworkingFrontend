@@ -86,8 +86,8 @@ export function DashboardNavbar() {
         // Espera a que el evento "qr" sea emitido por el backend.
         socket.on("qr", async (qrText) => {
           // Genera la imagen QR a partir de la cadena recibida
-          const qrImageUrl = await QRCode.toDataURL(qrText);
-          setQr(qrImageUrl);
+          // const qrImageUrl = await QRCode.toDataURL(qrText);
+          // setQr(qrImageUrl);
         });
       }
     });

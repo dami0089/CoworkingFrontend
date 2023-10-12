@@ -32,35 +32,14 @@ const ContableProvider = ({ children }) => {
   const [movimientos, setMovimientos] = useState([]);
   const [seleccionEntidad, setSeleccionEntidad] = useState(1);
   const [actualizarMovimiento, setActualizarMovimiento] = useState(false);
-  //   const [modalNuevoCliente2, setModalNuevoCliente2] = useState(false);
-  //   const [modalNuevoPlan, setModalNuevoPlan] = useState(false);
-  //   const [modalEditarCliente, setModaleEditarCliente] = useState(false);
-  //   const [nombreUsuario, setNombreUsuario] = useState("");
-  //   const [valueProfile, setValueProfile] = useState(1);
-  //   const [apellidoUsuario, setApellidoUsuario] = useState("");
-  //   const [dniUsuario, setDniUsuario] = useState("");
-  //   const [emailUsuario, setEmailUsuario] = useState("");
-  //   const [celuUsuario, setCeluUsuario] = useState("");
-  //   const [modalResumen, setModalResumen] = useState(false);
-  //   const [fechaVencimiento, setFechaVencimiento] = useState("");
-  //   const [domicilio, setDomicilio] = useState("");
-  //   const [clientes, setClientes] = useState([]);
-  //   const [usuarios, setUsuarios] = useState([]);
-  //   const [mostrarPlanes, setMostrarPlanes] = useState([]);
-  //   const [nombrePlan, setNombrePlan] = useState("");
-  //   const [descripcionPlan, setDescripcionPlan] = useState("");
-  //   const [horasSalas, setHorasSalas] = useState("");
-  //   const [precioPlan, setPrecioPlan] = useState("");
-  //   const [editarCliente, setEditarCliente] = useState({});
-  //   const [formaDePago, setFormaDePago] = useState(2);
-  //   const [cuitEditar, setCuitEditar] = useState("");
+
   const [movimiento, setMovimiento] = useState([]);
-  //   const [obtenerUs, setObtenerUs] = useState([]);
-  //   const [cargando, setCargando] = useState(false);
+
   const [gasto, setGasto] = useState([]);
   const [gastoId, setGastoId] = useState({});
   const [renderMovimiento, setRenderMovimiento] = useState(false);
   const [selectorContable, setSelectorContable] = useState(1);
+  const [idMovimiento, setIdMovimiento] = useState("");
 
   // const { auth } = useAuth();
 
@@ -91,17 +70,6 @@ const ContableProvider = ({ children }) => {
 
   const handleModalEditarMovimiento = () => {
     setModalEditarMovimiento(!modalEditarMovimiento);
-    setEntidad(0);
-    setTipo("");
-    setIdProveedor("");
-    setIdCliente("");
-    setNumeroFactura("");
-    setDescripcion("");
-    setPrecioBruto("");
-    setIva("");
-    setPrecioNeto("");
-    setNombreEntidad("");
-    handleModalNuevoMovimiento();
   };
 
   const handleCloseModalMovimientos = () => {
@@ -327,6 +295,8 @@ const ContableProvider = ({ children }) => {
         setRenderMovimiento,
         selectorContable,
         setSelectorContable,
+        idMovimiento,
+        setIdMovimiento,
       }}
     >
       {children}

@@ -1,17 +1,25 @@
 import { Button, Card, CardBody, Typography } from "@material-tailwind/react";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { projectsTableData } from "@/data";
 
 import useContable from "@/hooks/useContable";
 import { formatearFecha } from "@/helpers/formatearFecha";
-import ModalEditarMovimiento from "./ModalEditarMovimiento";
+import ModalEditarMovimientos from "./ModalEditarMovimientos";
+import { StatisticsCard } from "@/widgets/cards";
+import {
+  ArrowTrendingDownIcon,
+  ArrowTrendingUpIcon,
+  BanknotesIcon,
+  CreditCardIcon,
+  CurrencyDollarIcon,
+  HomeModernIcon,
+} from "@heroicons/react/24/solid";
+import { ToastContainer } from "react-toastify";
 
 const ListadoBanco = () => {
   const {
-    handleModalNuevoMovimiento,
     movimientos,
-    obtenerMovimiento,
-    movimiento,
+
     handleModalEditarMovimiento,
     obtenerMovimientos,
     setTipo,
@@ -22,9 +30,17 @@ const ListadoBanco = () => {
     setDescripcion,
     setPrecioBruto,
     setIdCliente,
-    setSelectorContable,
+
     modalEditarMovimiento,
+    setPrecioNeto,
+    renderMovimiento,
+    setRenderMovimiento,
   } = useContable();
+
+  const [totalIngresos, setTotalIngresos] = useState("");
+  const [totalGastos, setTotalGastos] = useState("");
+  const [totalDisponible, setTotalDisponible] = useState("");
+  const [calculoTotal, setCalculoTotal] = useState(false);
 
   useEffect(() => {
     const traerInfo = async () => {
@@ -33,36 +49,113 @@ const ListadoBanco = () => {
     traerInfo();
   }, []);
 
-  const handleClick = async (
+  useEffect(() => {
+    const traerInfo = async () => {
+      if (renderMovimiento) {
+        await obtenerMovimientos();
+        setRenderMovimiento(false);
+      }
+    };
+    traerInfo();
+  }, [renderMovimiento]);
+
+  const handleClick = (
     e,
-    id,
+    _id,
     entidad,
     tipo,
     cliente,
+    proveedor,
     numeroFactura,
     descripcion,
-    precioBruto,
-    proveedor
+    precioNeto
   ) => {
-    e.preventDefault();
+    setIdMovimiento(_id);
     setTipo(tipo);
     setEntidad(entidad);
-
-    if (tipo === "Ingreso") {
-      setIdCliente(cliente);
-    } else if (tipo === "Gasto") {
-      setIdProveedor(proveedor);
-    }
-    setNumeroFactura(numeroFactura);
+    setIdCliente(cliente);
+    setIdProveedor(proveedor);
     setDescripcion(descripcion);
-    setPrecioBruto(precioBruto);
+    setPrecioNeto(precioNeto);
     handleModalEditarMovimiento();
   };
 
+  useEffect(() => {
+    let precio = 0;
+    let total = 0;
+
+    movimientos.forEach((movimiento) => {
+      if (movimiento.tipo == "Ingreso" && movimiento.entidad == "Banco") {
+        precio = parseFloat(movimiento.precioNeto);
+        total += precio;
+      }
+    });
+    setTotalIngresos(total.toFixed(2));
+  }, []);
+
+  useEffect(() => {
+    let precioG = 0;
+
+    let totalG = 0;
+
+    movimientos.forEach((movimiento) => {
+      if (movimiento.tipo === "Gasto" && movimiento.entidad === "Banco") {
+        precioG = parseFloat(movimiento.precioNeto);
+        totalG += precioG;
+        // setMovimientoGastoBanco(total);
+      }
+    });
+    setTotalGastos(totalG.toFixed(2));
+    setCalculoTotal(true);
+  }, []);
+
+  useEffect(() => {
+    if (calculoTotal) {
+      let totalB = parseFloat(totalIngresos) - parseFloat(totalGastos);
+      setTotalDisponible(totalB.toFixed(2));
+      setCalculoTotal(false);
+    }
+  }, [calculoTotal]);
+
   return (
     <>
+      <div className="mt-12  grid gap-x-6 gap-y-10 md:grid-cols-2 xl:grid-cols-3">
+        <StatisticsCard
+          title="Total Gastado Banco"
+          color="blue"
+          icon={<ArrowTrendingDownIcon />}
+          footer={
+            <Typography className="text-center font-normal text-blue-gray-600">
+              <strong className="text-red-500">$ {totalGastos} </strong>
+            </Typography>
+          }
+        />
+        <StatisticsCard
+          title="Total Ingresos Banco"
+          color="blue"
+          icon={<ArrowTrendingUpIcon />}
+          footer={
+            <Typography className="text-center font-normal text-blue-gray-600">
+              <strong className="text-green-500">$ {totalIngresos} </strong>
+            </Typography>
+          }
+        />
+        <StatisticsCard
+          title="Disponible Banco"
+          color="green"
+          icon={<HomeModernIcon />}
+          footer={
+            <Typography className="text-center font-normal text-blue-gray-600">
+              <strong className=" text-blue-500">$ {totalDisponible} </strong>
+            </Typography>
+          }
+        />
+      </div>
+      <ToastContainer pauseOnFocusLoss={false} />
+
       <div className="mb-4 mt-8 grid grid-cols-1 gap-6  xl:grid-cols-3">
         <Typography className="ml-4 font-bold">Listado Banco</Typography>
+
         <Card className="overflow-hidden xl:col-span-3">
           <CardBody className="overflow-x-scroll px-0 pb-2 pt-0 text-center">
             <div className="max-h-[78vh] overflow-y-auto">
@@ -79,7 +172,7 @@ const ListadoBanco = () => {
                     ].map((el) => (
                       <th
                         key={el}
-                        className="border-b border-blue-gray-50 px-6 py-3 text-left"
+                        className="border-b border-blue-gray-50 px-6 py-3 text-center"
                       >
                         <Typography
                           variant="small"
@@ -105,7 +198,7 @@ const ListadoBanco = () => {
                         entidad,
                         cliente,
                         numeroFactura,
-                        precioBruto,
+
                         proveedor,
                       },
                       key
@@ -185,10 +278,10 @@ const ListadoBanco = () => {
                                           entidad,
                                           tipo,
                                           cliente,
+                                          proveedor,
                                           numeroFactura,
                                           descripcion,
-                                          precioBruto,
-                                          proveedor
+                                          precioNeto
                                         )
                                       }
                                     >
@@ -215,7 +308,7 @@ const ListadoBanco = () => {
             </div>
           </CardBody>
         </Card>
-        {modalEditarMovimiento ? <ModalEditarMovimiento /> : ""}
+        {modalEditarMovimiento ? <ModalEditarMovimientos /> : ""}
       </div>
     </>
   );
