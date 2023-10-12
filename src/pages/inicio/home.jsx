@@ -25,22 +25,7 @@ export function Home() {
   return (
     <div className="mt-12">
       <ToastContainer pauseOnFocusLoss={false} />
-      <div className="mb-12 grid gap-y-10 gap-x-6 hover:cursor-pointer md:grid-cols-2 xl:grid-cols-4">
-        <Card onClick={(e) => handleModalNuevoUsuario()}>
-          <StatisticsCard
-            key="Facturado Hoy"
-            title="Nuevo Usuario"
-            icon={<UserPlusIcon className=" bg-blue-300" />}
-            footer={
-              <Typography className="font-normal text-blue-gray-600">
-                <strong className="text-green-500">
-                  Crear un nuevo Usuario
-                </strong>
-              </Typography>
-            }
-          />
-        </Card>
-
+      <div className="mb-12 grid gap-x-6 gap-y-10 hover:cursor-pointer md:grid-cols-2 xl:grid-cols-4">
         <StatisticsCard
           key="Total de Clientes"
           title="Total de Clientes"
@@ -75,7 +60,7 @@ export function Home() {
           }
         />
       </div>
-      <div className="mb-6 grid grid-cols-1 gap-y-12 gap-x-6 md:grid-cols-2 xl:grid-cols-3">
+      <div className="mb-6 grid grid-cols-1 gap-x-6 gap-y-12 md:grid-cols-2 xl:grid-cols-3">
         {statisticsChartsData.map((props) => (
           <StatisticsChart
             key={props.title}

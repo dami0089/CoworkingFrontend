@@ -276,7 +276,7 @@ export function Contable() {
 
   return (
     <div className="mt-12">
-      <div className="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-4">
+      <div className="mb-12 grid gap-x-6 gap-y-10 md:grid-cols-2 xl:grid-cols-4">
         <StatisticsCard
           title="Banco"
           color="blue"
@@ -403,7 +403,7 @@ export function Contable() {
               </Button>
             </div>
           </CardHeader>
-          <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
+          <CardBody className="overflow-x-scroll px-0 pb-2 pt-0">
             <table className="w-full min-w-[640px] table-auto">
               {seleccionEntidad == 1 ? (
                 <ListadoBanco />

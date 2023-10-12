@@ -58,14 +58,14 @@ const ListadoDeVisitantes = () => {
       <Typography className="ml-5 mt-5 font-bold">
         Ultimos Visitantes
       </Typography>
-      <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
+      <CardBody className="mt-4 overflow-x-scroll px-0 pb-2 pt-0">
         <table className="w-full min-w-[640px] table-auto">
-          <thead>
+          <thead className="sticky top-0 bg-blue-50">
             <tr>
               {["Fecha", "Nombre", "Email", "Telefono", "Motivo"].map((el) => (
                 <th
                   key={el}
-                  className="border-b border-blue-gray-50 py-3 px-6 text-center"
+                  className="border-b border-blue-gray-50 px-6 py-3 text-center"
                 >
                   <Typography
                     variant="small"

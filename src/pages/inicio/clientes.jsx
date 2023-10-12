@@ -1,25 +1,12 @@
 import { React, useEffect } from "react";
-import {
-  Typography,
-  Card,
-  CardHeader,
-  CardBody,
-  Menu,
-  Button,
-} from "@material-tailwind/react";
+import { Card } from "@material-tailwind/react";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import {
-  BanknotesIcon,
-  BookOpenIcon,
-  BuildingStorefrontIcon,
   CalendarDaysIcon,
   CheckBadgeIcon,
   ClockIcon,
-  CurrencyDollarIcon,
-  DocumentPlusIcon,
   FingerPrintIcon,
   HandThumbDownIcon,
-  PlusCircleIcon,
   QueueListIcon,
   UserPlusIcon,
   UsersIcon,
@@ -45,19 +32,16 @@ import ListadoAsistenciasProfile from "@/components/clientes/ListadoAsistenciasP
 import ModalEditarAsistencia from "@/components/clientes/ModalEditarAsistencia";
 import ModalEditarUsuario from "@/components/clientes/ModalEditarUsuario";
 import ModalEliminarUsuario from "@/components/clientes/ModalEliminarUsuario";
-import QrScanner from "@/components/clientes/RegistrarClientes";
 import RegistrarClientes from "@/components/clientes/RegistrarClientes";
+import { useNavigate } from "react-router-dom";
 
 export function Clientes() {
+  const navigate = useNavigate();
   const {
     handleModalNuevoCliente,
     seleccion,
     setSeleccion,
     handleModalNuevoPlan,
-    nombreProfileAsistencia,
-    planprofileAsistencias,
-    resetAsistencias,
-    asistioHoyProfileAsistencias,
     setActualizoListado,
     obtenerUsuarios,
     modalEditarAsistencia,
@@ -88,237 +72,209 @@ export function Clientes() {
   }, [actualizoListado]);
 
   const handlePlanesActivos = () => {
-    setSeleccion(2);
+    navigate("/clientes/planes-activos");
+  };
+
+  const handleAsistencias = (e) => {
+    e.preventDefault();
+    navigate("/clientes/asistencias");
+  };
+
+  const handleVencimientos = (e) => {
+    e.preventDefault();
+    navigate("/clientes/proximos-vencimientos");
+  };
+
+  const handleListadoClientes = (e) => {
+    e.preventDefault();
+    navigate("/clientes/listado-clientes");
+  };
+
+  const handleUsuarios = (e) => {
+    e.preventDefault();
+    navigate("/clientes/listado-usuarios");
+  };
+
+  const handleInactivos = (e) => {
+    e.preventDefault();
+    navigate("/clientes/listado-clientes-inactivos");
+  };
+
+  const handleIngresarVisitante = (e) => {
+    e.preventDefault();
+    navigate("/clientes/ingresar-visitante");
   };
 
   return (
     <>
-      {seleccion == 1 ? (
-        <>
-          <div className="mt-20 flex flex-wrap justify-between">
-            <ToastContainer pauseOnFocusLoss={false} />
+      <>
+        <div className="mt-8 flex flex-wrap justify-between ">
+          <ToastContainer pauseOnFocusLoss={false} />
 
-            <div
-              className="w-1/3 p-2 hover:cursor-pointer"
-              onClick={handleModalNuevoCliente}
-            >
-              <div className="rounded-2xl bg-white p-4 shadow-lg dark:bg-gray-800">
-                <div className="flex flex-row items-center justify-between gap-4">
-                  <div className="flex-shrink-0">
-                    <a href="#" className="relative block">
-                      <UserPlusIcon className="mx-auto h-8 w-8 rounded-full object-cover" />
-                    </a>
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-lg font-medium text-gray-600 dark:text-white">
-                      Nuevo Cliente
-                    </span>
-                  </div>
+          <div
+            className="w-full p-2 hover:cursor-pointer md:w-1/2 lg:w-1/3"
+            onClick={handleModalNuevoCliente}
+          >
+            <div className="rounded-2xl bg-white p-4 shadow-lg dark:bg-gray-800">
+              <div className="flex flex-row items-center justify-between gap-4">
+                <div className="flex-shrink-0">
+                  <a href="#" className="relative block">
+                    <UserPlusIcon className="mx-auto h-8 w-8 rounded-full object-cover" />
+                  </a>
                 </div>
-              </div>
-            </div>
-
-            <div
-              className="w-1/3 p-2 hover:cursor-pointer"
-              onClick={(e) => handlePlanesActivos()}
-            >
-              <div className="rounded-2xl bg-white p-4 shadow-lg dark:bg-gray-800">
-                <div className="flex flex-row items-center justify-between gap-4">
-                  <div className="flex-shrink-0">
-                    <a href="#" className="relative block">
-                      <CheckBadgeIcon className="mx-auto h-8 w-8 rounded-full object-cover" />
-                    </a>
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-lg font-medium text-gray-600 dark:text-white">
-                      Planes Activos
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div
-              className="w-1/3 p-2 hover:cursor-pointer"
-              onClick={(e) => setSeleccion(3)}
-            >
-              <div className="rounded-2xl bg-white p-4 shadow-lg dark:bg-gray-800">
-                <div className="flex flex-row items-center justify-between gap-4">
-                  <div className="flex-shrink-0">
-                    <a href="#" className="relative block">
-                      <ClockIcon className="mx-auto h-8 w-8 rounded-full object-cover" />
-                    </a>
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-lg font-medium text-gray-600 dark:text-white">
-                      Asistencias
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="my-4 mt-10 h-0.5 bg-gray-300 shadow-md"></div>
-
-          <div className="mt-5 flex flex-wrap justify-between">
-            <div
-              className="w-1/3 p-2 hover:cursor-pointer"
-              onClick={(e) => setSeleccion(4)}
-            >
-              <div className="rounded-2xl bg-white p-4 shadow-lg dark:bg-gray-800">
-                <div className="flex flex-row items-center justify-between gap-4">
-                  <div className="flex-shrink-0">
-                    <a href="#" className="relative block">
-                      <CalendarDaysIcon className="mx-auto h-8 w-8 rounded-full object-cover" />
-                    </a>
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-lg font-medium text-gray-600 dark:text-white">
-                      Proximos Vencimientos
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div
-              className="w-1/3 p-2 hover:cursor-pointer"
-              onClick={(e) => setSeleccion(5)}
-            >
-              <div className="rounded-2xl bg-white p-4 shadow-lg dark:bg-gray-800">
-                <div className="flex flex-row items-center justify-between gap-4">
-                  <div className="flex-shrink-0">
-                    <a href="#" className="relative block">
-                      <QueueListIcon className="mx-auto h-8 w-8 rounded-full object-cover" />
-                    </a>
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-lg font-medium text-gray-600 dark:text-white">
-                      Listado de Clientes
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div
-              className="w-1/3 p-2 hover:cursor-pointer"
-              onClick={(e) => setSeleccion(6)}
-            >
-              <div className="rounded-2xl bg-white p-4 shadow-lg dark:bg-gray-800">
-                <div className="flex flex-row items-center justify-between gap-4">
-                  <div className="flex-shrink-0">
-                    <a href="#" className="relative block">
-                      <UsersIcon className="mx-auto h-8 w-8 rounded-full object-cover" />
-                    </a>
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-lg font-medium text-gray-600 dark:text-white">
-                      Listado de Usuarios
-                    </span>
-                  </div>
+                <div className="flex flex-col">
+                  <span className="text-lg font-medium text-gray-600 dark:text-white">
+                    Nuevo Cliente
+                  </span>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="my-4 mt-10 h-0.5 bg-gray-300 shadow-md"></div>
-
-          <div className="mt-5 flex flex-wrap justify-between">
-            <div
-              className="w-1/2 p-2 hover:cursor-pointer"
-              onClick={(e) => setSeleccion(7)}
-            >
-              <div className="rounded-2xl bg-white p-4 shadow-lg dark:bg-gray-800">
-                <div className="flex flex-row items-center justify-between gap-4">
-                  <div className="flex-shrink-0">
-                    <a href="#" className="relative block">
-                      <HandThumbDownIcon className="mx-auto h-8 w-8 rounded-full object-cover" />
-                    </a>
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-lg font-medium text-gray-600 dark:text-white">
-                      Clientes inactivos
-                    </span>
-                  </div>
+          <div
+            className="w-full p-2 hover:cursor-pointer md:w-1/2 lg:w-1/3"
+            onClick={(e) => handlePlanesActivos()}
+          >
+            <div className="rounded-2xl bg-white p-4 shadow-lg dark:bg-gray-800">
+              <div className="flex flex-row items-center justify-between gap-4">
+                <div className="flex-shrink-0">
+                  <a href="#" className="relative block">
+                    <CheckBadgeIcon className="mx-auto h-8 w-8 rounded-full object-cover" />
+                  </a>
                 </div>
-              </div>
-            </div>
-            <div
-              className="w-1/2 p-2 hover:cursor-pointer"
-              onClick={(e) => setSeleccion(10)}
-            >
-              <div className="rounded-2xl bg-white p-4 shadow-lg dark:bg-gray-800">
-                <div className="flex flex-row items-center justify-between gap-4">
-                  <div className="flex-shrink-0">
-                    <a href="#" className="relative block">
-                      <FingerPrintIcon className="mx-auto h-8 w-8 rounded-full object-cover" />
-                    </a>
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-lg font-medium text-gray-600 dark:text-white">
-                      Ingresar Visitante
-                    </span>
-                  </div>
+                <div className="flex flex-col">
+                  <span className="text-lg font-medium text-gray-600 dark:text-white">
+                    Planes Activos
+                  </span>
                 </div>
               </div>
             </div>
           </div>
-        </>
-      ) : seleccion == 2 ? (
-        <div className=" mb-4 mt-10 grid grid-cols-1 gap-6  xl:grid-cols-3">
-          <Card className="overflow-hidden xl:col-span-3">
-            <Planes />
-          </Card>
+          <div
+            className="w-full p-2 hover:cursor-pointer md:w-1/2 lg:w-1/3"
+            onClick={(e) => handleAsistencias(e)}
+          >
+            <div className="rounded-2xl bg-white p-4 shadow-lg dark:bg-gray-800">
+              <div className="flex flex-row items-center justify-between gap-4">
+                <div className="flex-shrink-0">
+                  <a href="#" className="relative block">
+                    <ClockIcon className="mx-auto h-8 w-8 rounded-full object-cover" />
+                  </a>
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-lg font-medium text-gray-600 dark:text-white">
+                    Asistencias
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-      ) : seleccion == 3 ? (
-        <div className=" mb-4 mt-10 grid grid-cols-1 gap-6  xl:grid-cols-3">
-          <Card className="overflow-hidden xl:col-span-3">
-            <ListadodeAsistencias />
-          </Card>
+        <div className="my-4 mt-10 h-0.5 bg-gray-300 shadow-md"></div>
+
+        <div className="mt-5 flex flex-wrap justify-between">
+          <div
+            className="w-full p-2 hover:cursor-pointer md:w-1/2 lg:w-1/3"
+            onClick={(e) => handleVencimientos(e)}
+          >
+            <div className="rounded-2xl bg-white p-4 shadow-lg dark:bg-gray-800">
+              <div className="flex flex-row items-center justify-between gap-4">
+                <div className="flex-shrink-0">
+                  <a href="#" className="relative block">
+                    <CalendarDaysIcon className="mx-auto h-8 w-8 rounded-full object-cover" />
+                  </a>
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-lg font-medium text-gray-600 dark:text-white">
+                    Proximos Vencimientos
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            className="w-full p-2 hover:cursor-pointer md:w-1/2 lg:w-1/3"
+            onClick={(e) => handleListadoClientes(e)}
+          >
+            <div className="rounded-2xl bg-white p-4 shadow-lg dark:bg-gray-800">
+              <div className="flex flex-row items-center justify-between gap-4">
+                <div className="flex-shrink-0">
+                  <a href="#" className="relative block">
+                    <QueueListIcon className="mx-auto h-8 w-8 rounded-full object-cover" />
+                  </a>
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-lg font-medium text-gray-600 dark:text-white">
+                    Clientes Activos
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            className="w-full p-2 hover:cursor-pointer md:w-1/2 lg:w-1/3"
+            onClick={(e) => handleUsuarios(e)}
+          >
+            <div className="rounded-2xl bg-white p-4 shadow-lg dark:bg-gray-800">
+              <div className="flex flex-row items-center justify-between gap-4">
+                <div className="flex-shrink-0">
+                  <a href="#" className="relative block">
+                    <UsersIcon className="mx-auto h-8 w-8 rounded-full object-cover" />
+                  </a>
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-lg font-medium text-gray-600 dark:text-white">
+                    Listado de Usuarios
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-      ) : seleccion == 4 ? (
-        <div className=" mb-4 mt-10 grid grid-cols-1 gap-6  xl:grid-cols-3">
-          <Card className="overflow-hidden xl:col-span-3">
-            <ListadodeProximosVencimientos />
-          </Card>
+
+        <div className="my-4 mt-10 h-0.5 bg-gray-300 shadow-md"></div>
+
+        <div className="mt-5 flex flex-wrap justify-between">
+          <div
+            className="w-full p-2 hover:cursor-pointer md:w-1/2"
+            onClick={(e) => handleInactivos(e)}
+          >
+            <div className="rounded-2xl bg-white p-4 shadow-lg dark:bg-gray-800">
+              <div className="flex flex-row items-center justify-between gap-4">
+                <div className="flex-shrink-0">
+                  <a href="#" className="relative block">
+                    <HandThumbDownIcon className="mx-auto h-8 w-8 rounded-full object-cover" />
+                  </a>
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-lg font-medium text-gray-600 dark:text-white">
+                    Clientes inactivos
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            className="w-full p-2 hover:cursor-pointer md:w-1/2"
+            onClick={(e) => handleIngresarVisitante(e)}
+          >
+            <div className="rounded-2xl bg-white p-4 shadow-lg dark:bg-gray-800">
+              <div className="flex flex-row items-center justify-between gap-4">
+                <div className="flex-shrink-0">
+                  <a href="#" className="relative block">
+                    <FingerPrintIcon className="mx-auto h-8 w-8 rounded-full object-cover" />
+                  </a>
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-lg font-medium text-gray-600 dark:text-white">
+                    Ingresar Visitante
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-      ) : seleccion == 5 ? (
-        <div className=" mb-4 mt-10 grid grid-cols-1 gap-6  xl:grid-cols-3">
-          <Card className="overflow-hidden xl:col-span-3">
-            <ListadodeClientes />
-          </Card>
-        </div>
-      ) : seleccion == 6 ? (
-        <div className=" mb-4 mt-10 grid grid-cols-1 gap-6  xl:grid-cols-3">
-          <Card className="overflow-hidden xl:col-span-3">
-            <ListadoUsuarios />
-          </Card>
-        </div>
-      ) : seleccion == 7 ? (
-        <div className=" mb-4 mt-10 grid grid-cols-1 gap-6  xl:grid-cols-3">
-          <Card className="overflow-hidden xl:col-span-3">
-            <ListadodeClientesInactivos />
-          </Card>
-        </div>
-      ) : seleccion == 8 ? (
-        <div className=" mb-4 mt-10 grid grid-cols-1 gap-6  xl:grid-cols-3">
-          <Card className="overflow-hidden xl:col-span-3">
-            <Profile />
-          </Card>
-        </div>
-      ) : seleccion == 9 ? (
-        <div className=" mb-4 mt-10 grid grid-cols-1 gap-6  xl:grid-cols-3">
-          <Card className="overflow-hidden xl:col-span-3">
-            <ListadoAsistenciasProfile />
-          </Card>
-        </div>
-      ) : seleccion == 10 ? (
-        <div className=" mb-1 mt-4 grid grid-cols-1 gap-6  xl:grid-cols-3">
-          <Card className="overflow-hidden xl:col-span-3">
-            <RegistrarClientes />
-          </Card>
-        </div>
-      ) : (
-        ""
-      )}
+      </>
 
       {/* {cargando ? <Cargando /> : ""} */}
       {modalNuevoCliente ? <ModalNuevoCliente /> : ""}
@@ -326,9 +282,8 @@ export function Clientes() {
       {modalResumen ? <ModalResumen /> : ""}
       {modalNuevoPlan ? <ModalNuevoPlan /> : ""}
       {modalEditarCliente ? <EditarCliente /> : ""}
-      {modalModificarPlan ? <ModalModificarPlan /> : ""}
+
       {modalEditarAsistencia ? <ModalEditarAsistencia /> : ""}
-      {modalEditarUsuario ? <ModalEditarUsuario /> : ""}
       {modalEliminarUsuario ? <ModalEliminarUsuario /> : ""}
     </>
   );

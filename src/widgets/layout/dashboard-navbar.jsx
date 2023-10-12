@@ -68,9 +68,9 @@ export function DashboardNavbar() {
   }, [autenticado]);
 
   useEffect(() => {
-    // const socket = io("http://localhost:3000");
+    const socket = io("http://localhost:3000");
     // const socket = io("http://34.235.146.116:3000");
-    const socket = io("https://peopleapp.com.ar");
+    // const socket = io("https://peopleapp.com.ar");
 
     socket.on("connection-successful", () => {
       console.log("Connection with WhatsApp is successful!");
@@ -110,36 +110,12 @@ export function DashboardNavbar() {
     >
       <div className="flex flex-col-reverse justify-between gap-6 md:flex-row md:items-center">
         <div className="capitalize">
-          <Breadcrumbs
-            className={`bg-transparent p-0 transition-all ${
-              fixedNavbar ? "mt-1" : ""
-            }`}
-          >
-            <Link to={`/${layout}`}>
-              <Typography
-                variant="small"
-                color="blue-gray"
-                className="font-normal opacity-50 transition-all hover:text-blue-500 hover:opacity-100"
-              >
-                {layout}
-              </Typography>
-            </Link>
-            <Typography
-              variant="small"
-              color="blue-gray"
-              className="font-normal"
-            >
-              {page}
-            </Typography>
-          </Breadcrumbs>
-          <Typography variant="h6" color="blue-gray">
-            {page}
-          </Typography>
-        </div>
-        <div className="flex items-center">
+          {" "}
           <div className="mr-auto md:mr-4 md:w-56">
             <Input label="Buscar cliente" />
           </div>
+        </div>
+        <div className="flex items-center">
           <QrCodeIcon
             className={`h-8 w-8 text-black hover:cursor-pointer ${
               autenticado == "1"

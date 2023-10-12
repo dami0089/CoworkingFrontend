@@ -81,7 +81,7 @@ const ModalEditarProveedor = () => {
         className="fixed inset-0 z-10 overflow-y-auto"
         onClose={handleEditarProveedor}
       >
-        <div className="flex min-h-screen items-end justify-center px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+        <div className="flex min-h-screen items-end justify-center px-4 pb-20 pt-4 text-center sm:block sm:p-0">
           <ToastContainer pauseOnFocusLoss={false} />
 
           <Transition.Child
@@ -113,8 +113,8 @@ const ModalEditarProveedor = () => {
             leaveFrom="opacity-100 translate-y-0 sm:scale-100"
             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
           >
-            <div className="inline-block transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6 sm:align-middle">
-              <div className="absolute top-0 right-0 hidden pt-4 pr-4 sm:block">
+            <div className="inline-block transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6 sm:align-middle">
+              <div className="absolute right-0 top-0 hidden pr-4 pt-4 sm:block">
                 <button
                   type="button"
                   className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
@@ -137,7 +137,7 @@ const ModalEditarProveedor = () => {
               </div>
 
               <div className="sm:flex sm:items-start">
-                <div className="mt-3 w-full text-center sm:mt-0 sm:ml-0 sm:text-left">
+                <div className="mt-3 w-full text-center sm:ml-0 sm:mt-0 sm:text-left">
                   <Dialog.Title
                     as="h3"
                     className="text-xl font-bold leading-6 text-gray-900"
@@ -145,7 +145,7 @@ const ModalEditarProveedor = () => {
                     Editar Proveedor
                   </Dialog.Title>
 
-                  <form className="my-2 mx-2" onSubmit={handleSubmit}>
+                  <form className="mx-2 my-2" onSubmit={handleSubmit}>
                     <div className="mb-2">
                       <label
                         className="text-sm font-bold uppercase text-gray-700"

@@ -58,7 +58,7 @@ export function Proveedores() {
     seleccionProveedor == 5 ? (
     <>
       <div className="mt-12">
-        <div className="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-3">
+        <div className="mb-12 grid gap-x-6 gap-y-10 md:grid-cols-2 xl:grid-cols-3">
           <Card>
             <Button
               variant="gradient"

@@ -53,8 +53,10 @@ import ListadoCripto from "@/components/contable/ListadoCripto";
 import ModalNuevoMovimiento from "@/components/proveedores/ModalNuevoMovimiento";
 import ModalEditarMovimiento from "@/components/contable/ModalEditarMovimiento";
 import { ToastContainer } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 export function Contable() {
+  const navigate = useNavigate();
   const {
     seleccionEntidad,
     setSeleccionEntidad,
@@ -175,9 +177,26 @@ export function Contable() {
     handleModalNuevoMovimiento();
   };
 
+  const handleBanco = (e) => {
+    e.preventDefault();
+    navigate("/contable/banco");
+  };
+
+  const handleMp = (e) => {
+    e.preventDefault();
+
+    navigate("/contable/mp");
+  };
+
+  const handleEfectivo = (e) => {
+    e.preventDefault();
+
+    navigate("/contable/efectivo");
+  };
+
   return (
     <>
-      <div className="mt-12  grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-3">
+      <div className="mt-12  grid gap-x-6 gap-y-10 md:grid-cols-2 xl:grid-cols-3">
         <StatisticsCard
           title="Banco"
           color="blue"
@@ -211,205 +230,195 @@ export function Contable() {
           }
         />
       </div>
-      {selectorContable == 1 ? (
-        <>
-          <div className="mt-10 flex flex-wrap justify-between">
-            <ToastContainer pauseOnFocusLoss={false} />
 
-            <div
-              className="w-1/3 p-2 hover:cursor-pointer"
-              // onClick={handleModalNuevoCliente}
-            >
-              <div className="rounded-2xl bg-white p-4 shadow-lg dark:bg-gray-800">
-                <div className="flex flex-row items-center justify-between gap-4">
-                  <div className="flex-shrink-0">
-                    <a href="#" className="relative block">
-                      <SquaresPlusIcon className="mx-auto h-8 w-8 rounded-full object-cover" />
-                    </a>
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-lg font-medium text-gray-600 dark:text-white">
-                      Nueva Factura
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
+      <>
+        <div className="mt-10 flex flex-wrap justify-between">
+          <ToastContainer pauseOnFocusLoss={false} />
 
-            <div
-              className="w-1/3 p-2 hover:cursor-pointer"
-              onClick={(e) => handlePlanesActivos()}
-            >
-              <div className="rounded-2xl bg-white p-4 shadow-lg dark:bg-gray-800">
-                <div className="flex flex-row items-center justify-between gap-4">
-                  <div className="flex-shrink-0">
-                    <a href="#" className="relative block">
-                      <InboxArrowDownIcon className="mx-auto h-8 w-8 rounded-full object-cover" />
-                    </a>
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-lg font-medium text-gray-600 dark:text-white">
-                      Recibos
-                    </span>
-                  </div>
+          <div
+            className="w-1/3 p-2 hover:cursor-pointer"
+            // onClick={handleModalNuevoCliente}
+          >
+            <div className="rounded-2xl bg-white p-4 shadow-lg dark:bg-gray-800">
+              <div className="flex flex-row items-center justify-between gap-4">
+                <div className="flex-shrink-0">
+                  <a href="#" className="relative block">
+                    <SquaresPlusIcon className="mx-auto h-8 w-8 rounded-full object-cover" />
+                  </a>
                 </div>
-              </div>
-            </div>
-            <div
-              className="w-1/3 p-2 hover:cursor-pointer"
-              onClick={(e) => setSeleccion(3)}
-            >
-              <div className="rounded-2xl bg-white p-4 shadow-lg dark:bg-gray-800">
-                <div className="flex flex-row items-center justify-between gap-4">
-                  <div className="flex-shrink-0">
-                    <a href="#" className="relative block">
-                      <ArrowUpTrayIcon className="mx-auto h-8 w-8 rounded-full object-cover" />
-                    </a>
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-lg font-medium text-gray-600 dark:text-white">
-                      Orden de Pago
-                    </span>
-                  </div>
+                <div className="flex flex-col">
+                  <span className="text-lg font-medium text-gray-600 dark:text-white">
+                    Nueva Factura
+                  </span>
                 </div>
               </div>
             </div>
           </div>
-          <div className="my-4 mt-10 h-0.5 bg-gray-300 shadow-md"></div>
-          <div className="mt-5 flex flex-wrap justify-between">
-            <div
-              className="w-1/3 p-2 hover:cursor-pointer"
-              onClick={handleMovimiento}
-            >
-              <div className="rounded-2xl bg-white p-4 shadow-lg dark:bg-gray-800">
-                <div className="flex flex-row items-center justify-between gap-4">
-                  <div className="flex-shrink-0">
-                    <a href="#" className="relative block">
-                      <PlusIcon className="mx-auto h-8 w-8 rounded-full object-cover" />
-                    </a>
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-lg font-medium text-gray-600 dark:text-white">
-                      Nuevo Movimiento
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
 
-            <div
-              className="w-1/3 p-2 hover:cursor-pointer"
-              onClick={(e) => handlePlanesActivos()}
-            >
-              <div className="rounded-2xl bg-white p-4 shadow-lg dark:bg-gray-800">
-                <div className="flex flex-row items-center justify-between gap-4">
-                  <div className="flex-shrink-0">
-                    <a href="#" className="relative block">
-                      <CheckBadgeIcon className="mx-auto h-8 w-8 rounded-full object-cover" />
-                    </a>
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-lg font-medium text-gray-600 dark:text-white">
-                      Facturas pendientes de cobro
-                    </span>
-                  </div>
+          <div
+            className="w-1/3 p-2 hover:cursor-pointer"
+            onClick={(e) => handlePlanesActivos()}
+          >
+            <div className="rounded-2xl bg-white p-4 shadow-lg dark:bg-gray-800">
+              <div className="flex flex-row items-center justify-between gap-4">
+                <div className="flex-shrink-0">
+                  <a href="#" className="relative block">
+                    <InboxArrowDownIcon className="mx-auto h-8 w-8 rounded-full object-cover" />
+                  </a>
                 </div>
-              </div>
-            </div>
-            <div
-              className="w-1/3 p-2 hover:cursor-pointer"
-              onClick={(e) => setSeleccion(3)}
-            >
-              <div className="rounded-2xl bg-white p-4 shadow-lg dark:bg-gray-800">
-                <div className="flex flex-row items-center justify-between gap-4">
-                  <div className="flex-shrink-0">
-                    <a href="#" className="relative block">
-                      <ClockIcon className="mx-auto h-8 w-8 rounded-full object-cover" />
-                    </a>
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-lg font-medium text-gray-600 dark:text-white">
-                      Libro Diario
-                    </span>
-                  </div>
+                <div className="flex flex-col">
+                  <span className="text-lg font-medium text-gray-600 dark:text-white">
+                    Recibos
+                  </span>
                 </div>
               </div>
             </div>
           </div>
-          <div className="my-4 mt-10 h-0.5 bg-gray-300 shadow-md"></div>
-
-          <div className="mt-5 flex flex-wrap justify-between">
-            <div
-              className="w-1/3 p-2 hover:cursor-pointer"
-              onClick={(e) => setSelectorContable(2)}
-            >
-              <div className="rounded-2xl bg-white p-4 shadow-lg dark:bg-gray-800">
-                <div className="flex flex-row items-center justify-between gap-4">
-                  <div className="flex-shrink-0">
-                    <a href="#" className="relative block">
-                      <CalendarDaysIcon className="mx-auto h-8 w-8 rounded-full object-cover" />
-                    </a>
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-lg font-medium text-gray-600 dark:text-white">
-                      Banco
-                    </span>
-                  </div>
+          <div
+            className="w-1/3 p-2 hover:cursor-pointer"
+            onClick={(e) => setSeleccion(3)}
+          >
+            <div className="rounded-2xl bg-white p-4 shadow-lg dark:bg-gray-800">
+              <div className="flex flex-row items-center justify-between gap-4">
+                <div className="flex-shrink-0">
+                  <a href="#" className="relative block">
+                    <ArrowUpTrayIcon className="mx-auto h-8 w-8 rounded-full object-cover" />
+                  </a>
                 </div>
-              </div>
-            </div>
-            <div
-              className="w-1/3 p-2 hover:cursor-pointer"
-              onClick={(e) => setSelectorContable(3)}
-            >
-              <div className="rounded-2xl bg-white p-4 shadow-lg dark:bg-gray-800">
-                <div className="flex flex-row items-center justify-between gap-4">
-                  <div className="flex-shrink-0">
-                    <a href="#" className="relative block">
-                      <QueueListIcon className="mx-auto h-8 w-8 rounded-full object-cover" />
-                    </a>
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-lg font-medium text-gray-600 dark:text-white">
-                      Mercado Pago
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div
-              className="w-1/3 p-2 hover:cursor-pointer"
-              onClick={(e) => setSelectorContable(4)}
-            >
-              <div className="rounded-2xl bg-white p-4 shadow-lg dark:bg-gray-800">
-                <div className="flex flex-row items-center justify-between gap-4">
-                  <div className="flex-shrink-0">
-                    <a href="#" className="relative block">
-                      <UsersIcon className="mx-auto h-8 w-8 rounded-full object-cover" />
-                    </a>
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-lg font-medium text-gray-600 dark:text-white">
-                      Efectivo
-                    </span>
-                  </div>
+                <div className="flex flex-col">
+                  <span className="text-lg font-medium text-gray-600 dark:text-white">
+                    Orden de Pago
+                  </span>
                 </div>
               </div>
             </div>
           </div>
-        </>
-      ) : selectorContable == 2 ? (
-        <ListadoBanco />
-      ) : selectorContable == 3 ? (
-        <ListadoMercadoPago />
-      ) : selectorContable == 4 ? (
-        <ListadoCaja />
-      ) : (
-        ""
-      )}
+        </div>
+        <div className="my-4 mt-10 h-0.5 bg-gray-300 shadow-md"></div>
+        <div className="mt-5 flex flex-wrap justify-between">
+          <div
+            className="w-1/3 p-2 hover:cursor-pointer"
+            onClick={handleMovimiento}
+          >
+            <div className="rounded-2xl bg-white p-4 shadow-lg dark:bg-gray-800">
+              <div className="flex flex-row items-center justify-between gap-4">
+                <div className="flex-shrink-0">
+                  <a href="#" className="relative block">
+                    <PlusIcon className="mx-auto h-8 w-8 rounded-full object-cover" />
+                  </a>
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-lg font-medium text-gray-600 dark:text-white">
+                    Nuevo Movimiento
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div
+            className="w-1/3 p-2 hover:cursor-pointer"
+            onClick={(e) => handlePlanesActivos()}
+          >
+            <div className="rounded-2xl bg-white p-4 shadow-lg dark:bg-gray-800">
+              <div className="flex flex-row items-center justify-between gap-4">
+                <div className="flex-shrink-0">
+                  <a href="#" className="relative block">
+                    <CheckBadgeIcon className="mx-auto h-8 w-8 rounded-full object-cover" />
+                  </a>
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-lg font-medium text-gray-600 dark:text-white">
+                    Facturas pendientes de cobro
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            className="w-1/3 p-2 hover:cursor-pointer"
+            onClick={(e) => setSeleccion(3)}
+          >
+            <div className="rounded-2xl bg-white p-4 shadow-lg dark:bg-gray-800">
+              <div className="flex flex-row items-center justify-between gap-4">
+                <div className="flex-shrink-0">
+                  <a href="#" className="relative block">
+                    <ClockIcon className="mx-auto h-8 w-8 rounded-full object-cover" />
+                  </a>
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-lg font-medium text-gray-600 dark:text-white">
+                    Libro Diario
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="my-4 mt-10 h-0.5 bg-gray-300 shadow-md"></div>
+
+        <div className="mt-5 flex flex-wrap justify-between">
+          <div
+            className="w-1/3 p-2 hover:cursor-pointer"
+            onClick={(e) => handleBanco(e)}
+          >
+            <div className="rounded-2xl bg-white p-4 shadow-lg dark:bg-gray-800">
+              <div className="flex flex-row items-center justify-between gap-4">
+                <div className="flex-shrink-0">
+                  <a href="#" className="relative block">
+                    <CalendarDaysIcon className="mx-auto h-8 w-8 rounded-full object-cover" />
+                  </a>
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-lg font-medium text-gray-600 dark:text-white">
+                    Banco
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            className="w-1/3 p-2 hover:cursor-pointer"
+            onClick={(e) => handleMp(e)}
+          >
+            <div className="rounded-2xl bg-white p-4 shadow-lg dark:bg-gray-800">
+              <div className="flex flex-row items-center justify-between gap-4">
+                <div className="flex-shrink-0">
+                  <a href="#" className="relative block">
+                    <QueueListIcon className="mx-auto h-8 w-8 rounded-full object-cover" />
+                  </a>
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-lg font-medium text-gray-600 dark:text-white">
+                    Mercado Pago
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            className="w-1/3 p-2 hover:cursor-pointer"
+            onClick={(e) => handleEfectivo(e)}
+          >
+            <div className="rounded-2xl bg-white p-4 shadow-lg dark:bg-gray-800">
+              <div className="flex flex-row items-center justify-between gap-4">
+                <div className="flex-shrink-0">
+                  <a href="#" className="relative block">
+                    <UsersIcon className="mx-auto h-8 w-8 rounded-full object-cover" />
+                  </a>
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-lg font-medium text-gray-600 dark:text-white">
+                    Efectivo
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </>
 
       {modalNuevoMovimiento ? <ModalNuevoMovimiento /> : ""}
-      {modalEditarMovimiento ? <ModalEditarMovimiento /> : ""}
     </>
   );
 }
