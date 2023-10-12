@@ -8,9 +8,6 @@ import { input } from "@material-tailwind/react";
 
 const ModalNuevoMovimientos = () => {
   const {
-    handleModalNuevoMovimiento,
-    modalNuevoMovimiento,
-    handleCloseModalMovimientos,
     entidad,
     setEntidad,
     tipo,
@@ -19,18 +16,14 @@ const ModalNuevoMovimientos = () => {
     setIdProveedor,
     idCliente,
     setIdCliente,
-    numeroFactura,
-    setNumeroFactura,
+
     descripcion,
     setDescripcion,
     precioBruto,
-    setPrecioBruto,
-    iva,
-    setIva,
+
     precioNeto,
     setPrecioNeto,
-    nuevoGasto,
-    renderMovimiento,
+
     setRenderMovimiento,
     modalEditarMovimiento,
     handleModalEditarMovimiento,
@@ -147,13 +140,11 @@ const ModalNuevoMovimientos = () => {
         entidad: entidad,
         tipo: tipo,
         descripcion: descripcion,
-        precioBruto: precioBruto,
+        precioNeto: precioNeto,
         cliente: idCliente,
       });
       setRenderMovimiento(true);
-      setTimeout(() => {
-        handleModalNuevoMovimiento();
-      }, 600);
+      handleCloseModal();
     } else {
       await editarMovimiento({
         id: idMovimiento,

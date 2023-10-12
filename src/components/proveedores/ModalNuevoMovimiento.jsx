@@ -72,6 +72,7 @@ const ModalNuevoMovimiento = () => {
 
   const handleNombreProveedorChange = (e) => {
     const inputValue = e.target.value;
+    setNombreProveedor(inputValue);
 
     // Filtrar los clientes basados en el nombre ingresado
     const coincidencias = proveedores.filter((proveedor) =>
@@ -125,15 +126,6 @@ const ModalNuevoMovimiento = () => {
       }, 600);
     }
   };
-
-  // useEffect(() => {
-  //   let preciob = parseFloat(precioBruto);
-  //   let valorIVA = (preciob * 21) / 100;
-  //   let PrecioN = parseFloat((preciob + valorIVA).toFixed(2));
-
-  //   setIva(valorIVA.toFixed(2));
-  //   setPrecioNeto(PrecioN);
-  // }, [precioBruto]);
 
   return (
     <Transition.Root show={modalNuevoMovimiento} as={Fragment}>
@@ -337,22 +329,6 @@ const ModalNuevoMovimiento = () => {
                       )}
                     </div>
 
-                    {/* <div className="mb-1">
-                      <label
-                        className="text-sm font-bold uppercase text-gray-700"
-                        htmlFor="numero"
-                      >
-                        Numero de Factura
-                      </label>
-                      <input
-                        id="numero"
-                        type="text"
-                        placeholder="Numero de Factura"
-                        className="mt-2 w-full rounded-md border-2 p-2 placeholder-gray-400"
-                        value={numeroFactura}
-                        onChange={(e) => setNumeroFactura(e.target.value)}
-                      />
-                    </div> */}
                     <div className="mb-1">
                       {tipo === "Ingreso" ? (
                         <>

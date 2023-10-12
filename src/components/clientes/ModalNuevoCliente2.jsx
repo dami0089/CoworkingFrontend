@@ -97,16 +97,7 @@ const ModalNuevoCliente2 = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (
-      [
-        nombreUsuario,
-        apellidoUsuario,
-        dniUsuario,
-        emailUsuario,
-        celuUsuario,
-        planes,
-      ].includes("")
-    ) {
+    if ([nombreUsuario, dniUsuario, emailUsuario, planes].includes("")) {
       toast("⚠️ Todos los campos son obligatorios", {
         position: "top-right",
         autoClose: 1500,
@@ -129,7 +120,7 @@ const ModalNuevoCliente2 = () => {
         className="fixed inset-0 z-10 overflow-y-auto"
         onClose={handleModalNuevoCliente2}
       >
-        <div className="flex min-h-screen items-end justify-center px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+        <div className="flex min-h-screen items-end justify-center px-4 pb-20 pt-4 text-center sm:block sm:p-0">
           <ToastContainer pauseOnFocusLoss={false} />
 
           <Transition.Child
@@ -161,8 +152,8 @@ const ModalNuevoCliente2 = () => {
             leaveFrom="opacity-100 translate-y-0 sm:scale-100"
             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
           >
-            <div className="inline-block transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6 sm:align-middle">
-              <div className="absolute top-0 right-0 hidden pt-4 pr-4 sm:block">
+            <div className="inline-block transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6 sm:align-middle">
+              <div className="absolute right-0 top-0 hidden pr-4 pt-4 sm:block">
                 <button
                   type="button"
                   className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
@@ -185,7 +176,7 @@ const ModalNuevoCliente2 = () => {
               </div>
 
               <div className="sm:flex sm:items-start">
-                <div className="absolute top-0 right-8 hidden pt-4 pr-4 sm:block">
+                <div className="absolute right-8 top-0 hidden pr-4 pt-4 sm:block">
                   <button
                     type="button"
                     className="bg-red rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
@@ -201,7 +192,7 @@ const ModalNuevoCliente2 = () => {
                     ></svg>
                   </button>
                 </div>
-                <div className="mt-3 w-full text-center sm:mt-0 sm:ml-0 sm:text-left">
+                <div className="mt-3 w-full text-center sm:ml-0 sm:mt-0 sm:text-left">
                   <Dialog.Title
                     as="h3"
                     className="text-xl font-bold leading-6 text-gray-900"
@@ -209,7 +200,7 @@ const ModalNuevoCliente2 = () => {
                     Alta de planes
                   </Dialog.Title>
 
-                  <form className="my-2 mx-2" onSubmit={handleSubmit}>
+                  <form className="mx-2 my-2" onSubmit={handleSubmit}>
                     {cantidad != "1" ? (
                       ""
                     ) : (
@@ -239,7 +230,9 @@ const ModalNuevoCliente2 = () => {
                           >
                             <option value="">--Seleccionar--</option>
                             {mostrarPlanes.map((planes) => (
-                              <option key={planes._id}>{planes.nombre}</option>
+                              <option key={planes._id} value={planes._id}>
+                                {planes.nombre}
+                              </option>
                             ))}
                           </select>
                         </div>

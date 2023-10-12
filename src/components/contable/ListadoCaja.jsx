@@ -69,29 +69,28 @@ const ListadoCaja = () => {
     traerInfo();
   }, []);
 
+  function parseDecimal(str) {
+    if (!str) return 0; // Si str es null, undefined o una cadena vacía, devuelve 0
+    return parseFloat(str.replace(",", "."));
+  }
+
   useEffect(() => {
-    let precio = 0;
     let total = 0;
 
     movimientos.forEach((movimiento) => {
-      if (movimiento.tipo == "Ingreso" && movimiento.entidad == "Efectivo") {
-        precio = parseFloat(movimiento.precioNeto);
-        total += precio;
+      if (movimiento.tipo == "Ingreso" && movimiento.entidad == "Banco") {
+        total += parseDecimal(movimiento.precioNeto);
       }
     });
     setTotalIngresos(total.toFixed(2));
   }, []);
 
   useEffect(() => {
-    let precioG = 0;
-
     let totalG = 0;
 
     movimientos.forEach((movimiento) => {
-      if (movimiento.tipo === "Gasto" && movimiento.entidad === "Efectivo") {
-        precioG = parseFloat(movimiento.precioNeto);
-        totalG += precioG;
-        // setMovimientoGastoBanco(total);
+      if (movimiento.tipo === "Gasto" && movimiento.entidad === "Banco") {
+        totalG += parseDecimal(movimiento.precioNeto);
       }
     });
     setTotalGastos(totalG.toFixed(2));
@@ -100,7 +99,7 @@ const ListadoCaja = () => {
 
   useEffect(() => {
     if (calculoTotal) {
-      let totalB = parseFloat(totalIngresos) - parseFloat(totalGastos);
+      let totalB = parseDecimal(totalIngresos) - parseDecimal(totalGastos);
       setTotalDisponible(totalB.toFixed(2));
       setCalculoTotal(false);
     }

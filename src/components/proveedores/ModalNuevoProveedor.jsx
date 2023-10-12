@@ -66,51 +66,11 @@ const ModalNuevoProveedor = () => {
     }
   };
 
-  // const consultarAfip = async (cuit) => {
-  //   try {
-  //     const token = localStorage.getItem("token");
-  //     if (!token) return;
-  //     const config = {
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         Authorization: `Bearer ${token}`,
-  //       },
-  //     };
-
-  //     const { data } = await clienteAxios.post(
-  //       `/proveedores/comprobarAfip`,
-  //       { cuit },
-  //       config
-  //     );
-
-  //     console.log(data);
-  //   } catch (error) {
-  //     toast.error(error.response.data.msg, {
-  //       position: "top-right",
-  //       autoClose: 2000,
-  //       hideProgressBar: false,
-  //       closeOnClick: true,
-  //       pauseOnHover: true,
-  //       draggable: true,
-  //       progress: undefined,
-  //       theme: "light",
-  //     });
-  //   }
-  // };
-
   //Comprueba que todos los campos esten ok, y de ser asi pasa a consultar si el cuit no corresponde a un usuario ya registrado
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (
-      [
-        tipoProveedor,
-        nombreProveedor,
-        cuitProveedor,
-        domicilioProveedor,
-        emailProveedor,
-      ].includes("")
-    ) {
+    if ([nombreProveedor].includes("")) {
       toast("⚠️ Todos los campos son obligatorios", {
         position: "top-right",
         autoClose: 1500,

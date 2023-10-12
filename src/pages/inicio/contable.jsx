@@ -1,33 +1,8 @@
 import React, { useEffect, useState } from "react";
-import {
-  Typography,
-  Card,
-  CardHeader,
-  CardBody,
-  IconButton,
-  Menu,
-  MenuHandler,
-  MenuList,
-  MenuItem,
-  Avatar,
-  Tooltip,
-  Progress,
-  Button,
-} from "@material-tailwind/react";
-import {
-  ClockIcon,
-  CheckIcon,
-  EllipsisVerticalIcon,
-  ArrowUpIcon,
-} from "@heroicons/react/24/outline";
+import { Typography } from "@material-tailwind/react";
+import { ClockIcon } from "@heroicons/react/24/outline";
 import { StatisticsCard } from "@/widgets/cards";
-import { StatisticsChart } from "@/widgets/charts";
-import {
-  statisticsCardsData,
-  statisticsChartsData,
-  projectsTableData,
-  ordersOverviewData,
-} from "@/data";
+
 import {
   ArrowUpTrayIcon,
   BanknotesIcon,
@@ -35,46 +10,32 @@ import {
   CheckBadgeIcon,
   CreditCardIcon,
   CurrencyDollarIcon,
-  GlobeAltIcon,
-  GlobeAsiaAustraliaIcon,
-  HandThumbDownIcon,
   InboxArrowDownIcon,
   PlusIcon,
   QueueListIcon,
   SquaresPlusIcon,
-  UserPlusIcon,
   UsersIcon,
 } from "@heroicons/react/24/solid";
 import useContable from "@/hooks/useContable";
-import ListadoBanco from "@/components/contable/ListadoBanco";
-import ListadoMercadoPago from "@/components/contable/ListadoMercadoPago";
-import ListadoCaja from "@/components/contable/ListadoCaja";
-import ListadoCripto from "@/components/contable/ListadoCripto";
+
 import ModalNuevoMovimiento from "@/components/proveedores/ModalNuevoMovimiento";
-import ModalEditarMovimientos from "@/components/contable/ModalEditarMovimientos";
 import { ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 export function Contable() {
   const navigate = useNavigate();
   const {
-    seleccionEntidad,
-    setSeleccionEntidad,
     movimientos,
     handleModalNuevoMovimiento,
     obtenerMovimientos,
     modalNuevoMovimiento,
-    modalEditarMovimiento,
     renderMovimiento,
     setRenderMovimiento,
-    selectorContable,
-    setSelectorContable,
   } = useContable();
 
   const [mostrarTotalBanco, setMostrarTotalBanco] = useState(0);
   const [mostrarTotalMP, setMostrarTotalMP] = useState(0);
   const [mostrarTotalEfectivo, setMostrarTotalEfectivo] = useState(0);
-  const [mostrarTotalCripto, setMostrarTotalCripto] = useState(0);
 
   const [renderizoMovimientos, setRenderizoMovimientos] = useState(false);
 
@@ -329,7 +290,7 @@ export function Contable() {
                 </div>
                 <div className="flex flex-col">
                   <span className="text-lg font-medium text-gray-600 dark:text-white">
-                    Facturas pendientes de cobro
+                    Facturas Pendientes
                   </span>
                 </div>
               </div>
