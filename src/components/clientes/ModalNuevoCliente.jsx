@@ -261,7 +261,7 @@ const ModalResumen = () => {
                         id="cuit"
                         type="text"
                         placeholder={
-                          tipo === "A" || tipo === "" ? "Cuit" : "Dni"
+                          tipo === "A" ? "Cuit" : tipo === "B" ? "Dni" : ""
                         }
                         className="mt-2 w-full rounded-md border-2 p-2 placeholder-gray-400"
                         value={cuit}
@@ -361,7 +361,7 @@ const ModalResumen = () => {
                   </form>
                   <Button
                     className="w-full cursor-pointer rounded bg-blue-600 p-3 text-sm font-bold uppercase text-white transition-colors hover:bg-blue-300"
-                    onClick={(e) => handleSubmit()}
+                    onClick={(e) => handleSubmit(e)}
                   >
                     Guardar
                   </Button>
