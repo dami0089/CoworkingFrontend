@@ -1,19 +1,9 @@
-import {
-  Avatar,
-  Button,
-  CardBody,
-  Progress,
-  Tooltip,
-  Typography,
-} from "@material-tailwind/react";
+import { CardBody, Typography } from "@material-tailwind/react";
 
 import React, { useEffect, useState } from "react";
 import { projectsTableData } from "@/data";
 import useClientes from "@/hooks/useClientes";
 import { formatearFecha } from "@/helpers/formatearFecha";
-import { useNavigate } from "react-router-dom";
-import { setOpenConfigurator } from "@/context";
-import { ArrowLeftCircleIcon } from "@heroicons/react/24/solid";
 
 const ListadoDeVisitantes = () => {
   const {
@@ -84,11 +74,10 @@ const ListadoDeVisitantes = () => {
                   _id,
                   fechaVisita,
                   nombre,
-                  fechaNac,
+
                   email,
                   celular,
-                  nacionalidad,
-                  dni,
+
                   motivo,
                 },
                 key
