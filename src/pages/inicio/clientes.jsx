@@ -23,7 +23,6 @@ import Planes from "@/components/clientes/Planes";
 import ModalNuevoPlan from "@/components/clientes/ModalNuevoPlan";
 import Profile from "@/components/clientes/Profile";
 
-import EditarCliente from "@/components/clientes/EditarCliente";
 import ModalModificarPlan from "@/components/clientes/ModalModificarPlan";
 import ListadodeClientesInactivos from "@/components/clientes/ListadodeClientesInactivos";
 import ListadodeProximosVencimientos from "@/components/clientes/ListadodeProximosVencimientos";
@@ -34,6 +33,7 @@ import ModalEditarUsuario from "@/components/clientes/ModalEditarUsuario";
 import ModalEliminarUsuario from "@/components/clientes/ModalEliminarUsuario";
 import RegistrarClientes from "@/components/clientes/RegistrarClientes";
 import { useNavigate } from "react-router-dom";
+import ModalEditarCliente from "@/components/clientes/ModalEditarCliente";
 
 export function Clientes() {
   const navigate = useNavigate();
@@ -281,7 +281,7 @@ export function Clientes() {
       {modalNuevoCliente2 ? <ModalNuevoCliente2 /> : ""}
       {modalResumen ? <ModalResumen /> : ""}
       {modalNuevoPlan ? <ModalNuevoPlan /> : ""}
-      {modalEditarCliente ? <EditarCliente /> : ""}
+      {modalEditarCliente ? <ModalEditarCliente /> : ""}
 
       {modalEditarAsistencia ? <ModalEditarAsistencia /> : ""}
       {modalEliminarUsuario ? <ModalEliminarUsuario /> : ""}

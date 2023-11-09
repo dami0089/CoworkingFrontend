@@ -2,15 +2,19 @@ import { Fragment, useState, useEffect } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import useClientes from "@/hooks/useClientes";
 import { ToastContainer, toast } from "react-toastify";
+import { Button, Checkbox } from "@material-tailwind/react";
+import clienteAxios from "@/configs/clinteAxios";
+import { ArrowLeftCircleIcon } from "@heroicons/react/24/solid";
 import { formatearFecha } from "@/helpers/formatearFecha";
 
 const TIPO = ["A", "B"];
 
-const EditarCliente = () => {
+const ModalEditarCliente = () => {
   const {
+    handleModalNuevoCliente2,
     setNombre,
-    editarC,
-
+    modalNuevoCliente,
+    cantidad,
     nombre,
     fechaVencimiento,
     setFechaVencimiento,
@@ -20,43 +24,39 @@ const EditarCliente = () => {
     tipo,
     setTipo,
     emailFactura,
-
-    modalEditarCliente,
-    handleModalEditarCliente,
-    editarCliente,
+    setCantidad,
+    handleClose1,
+    handleModalNuevoCliente,
     domicilio,
     setDomicilio,
-    cuitEditar,
-    obtenerCliente,
-    onCloseEditar,
+    planes,
+    setPlanes,
+    obtenerPlanes,
+    mostrarPlanes,
+    nuevoCliente,
+    telefono,
+    setTelefono,
+    modalEditarCliente,
+    handleModalEditarCliente,
+    editarClientes,
+    idClienteAEditar,
+    setIdClienteAEditar,
+    actualizoUsuarios,
+    setActualizoUsuarios,
   } = useClientes();
 
-  let fecha = "";
-
   useEffect(() => {
-    const editar = async () => {
-      await obtenerCliente(cuitEditar);
+    const mostrar = async () => {
+      await obtenerPlanes();
     };
-    editar();
-  }, []);
-
-  useEffect(() => {
-    if (fechaVencimiento) {
-      setFechaVencimiento(
-        new Date(fechaVencimiento).toISOString().substr(0, 10)
-      );
-    }
+    mostrar();
   }, []);
 
   //Comprueba que todos los campos esten ok, y de ser asi pasa a consultar si el cuit no corresponde a un usuario ya registrado
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(nombre);
-    console.log(cuit);
-    console.log(emailFactura);
-    console.log(fechaVencimiento);
 
-    if ([nombre, cuit, emailFactura, fechaVencimiento].includes("")) {
+    if ([nombre, emailFactura, fechaVencimiento, planes].includes("")) {
       toast("⚠️ Todos los campos son obligatorios", {
         position: "top-right",
         autoClose: 1500,
@@ -69,22 +69,19 @@ const EditarCliente = () => {
       });
       return;
     }
-    // handleModalNuevoCliente();
-    // handleModalNuevoCliente2();
-    // validarCuit(cuit);
-    await editarC({
-      id: cuitEditar,
+    await editarClientes({
+      id: idClienteAEditar,
       tipo: tipo,
       nombre: nombre,
       cuit: cuit,
       domicilio: domicilio,
-      emailFactura: emailFactura,
+      mailFactura: emailFactura,
       fechaVencimiento: fechaVencimiento,
+      planes: planes,
+      telefono: setTelefono,
     });
-
-    setTimeout(() => {
-      handleModalEditarCliente();
-    }, 1000);
+    setActualizoUsuarios(true);
+    handleModalEditarCliente();
   };
 
   return (
@@ -94,7 +91,7 @@ const EditarCliente = () => {
         className="fixed inset-0 z-10 overflow-y-auto"
         onClose={handleModalEditarCliente}
       >
-        <div className="flex min-h-screen items-end justify-center px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+        <div className="flex min-h-screen items-end justify-center px-4 pb-20 pt-4 text-center sm:block sm:p-0">
           <ToastContainer pauseOnFocusLoss={false} />
 
           <Transition.Child
@@ -126,12 +123,12 @@ const EditarCliente = () => {
             leaveFrom="opacity-100 translate-y-0 sm:scale-100"
             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
           >
-            <div className="inline-block transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6 sm:align-middle">
-              <div className="absolute top-0 right-0 hidden pt-4 pr-4 sm:block">
+            <div className="inline-block transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6 sm:align-middle">
+              <div className="absolute right-0 top-0 hidden pr-4 pt-4 sm:block">
                 <button
                   type="button"
                   className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                  onClick={onCloseEditar}
+                  onClick={handleModalEditarCliente}
                 >
                   <span className="sr-only">Cerrar</span>
                   <svg
@@ -150,15 +147,15 @@ const EditarCliente = () => {
               </div>
 
               <div className="sm:flex sm:items-start">
-                <div className="mt-3 w-full text-center sm:mt-0 sm:ml-0 sm:text-left">
+                <div className="mt-3 w-full text-center sm:ml-0 sm:mt-0 sm:text-left">
                   <Dialog.Title
                     as="h3"
                     className="text-xl font-bold leading-6 text-gray-900"
                   >
-                    Editar Cliente
+                    Nuevo Cliente
                   </Dialog.Title>
 
-                  <form className="my-2 mx-2" onSubmit={handleSubmit}>
+                  <form className="mx-2 my-2" onSubmit={handleSubmit}>
                     <div className="mb-2">
                       <label
                         className="text-sm font-bold uppercase text-gray-700"
@@ -212,7 +209,11 @@ const EditarCliente = () => {
                         id="cuit"
                         type="text"
                         placeholder={
-                          tipo === "A" || tipo === "" ? "Cuit" : "Dni"
+                          tipo === "A"
+                            ? "Cuit"
+                            : tipo === "B"
+                            ? "Dni"
+                            : "Selecciona el tipo de cliente"
                         }
                         className="mt-2 w-full rounded-md border-2 p-2 placeholder-gray-400"
                         value={cuit}
@@ -251,28 +252,66 @@ const EditarCliente = () => {
                         onChange={(e) => setEmailFactura(e.target.value)}
                       />
                     </div>
+
+                    <div className="mb-1">
+                      <label
+                        className="text-sm font-bold uppercase text-gray-700"
+                        htmlFor="tel"
+                      >
+                        Telefono
+                      </label>
+                      <input
+                        id="tel"
+                        type="text"
+                        placeholder="Telefono"
+                        className="mt-2 w-full rounded-md border-2 p-2 placeholder-gray-400"
+                        value={telefono}
+                        onChange={(e) => setTelefono(e.target.value)}
+                      />
+                    </div>
                     <div className="mb-1">
                       <label
                         className="text-sm font-bold uppercase text-gray-700"
                         htmlFor="fecha-venc"
                       >
-                        Proximo vencimiento del plan
+                        Fecha vencimiento del plan
                       </label>
                       <input
                         id="fecha-venc"
                         type="date"
                         className="mt-2 w-full rounded-md border-2 p-2 placeholder-gray-400"
-                        value={fechaVencimiento}
+                        value={formatearFecha(fechaVencimiento)}
                         onChange={(e) => setFechaVencimiento(e.target.value)}
                       />
                     </div>
-
-                    <input
-                      type="submit"
-                      className="w-full cursor-pointer rounded bg-blue-600 p-3 text-sm font-bold uppercase text-white transition-colors hover:bg-blue-300"
-                      value={"Guardar Cambios"}
-                    />
+                    <div className="mb-3">
+                      <label
+                        className="text-sm font-bold uppercase text-gray-700"
+                        htmlFor="cantidad"
+                      >
+                        Seleccionar Plan
+                      </label>
+                      <select
+                        id="cantidad"
+                        className="mt-2 w-full rounded-md border-2 p-2 placeholder-gray-400"
+                        value={planes}
+                        onChange={(e) => setPlanes(e.target.value)}
+                      >
+                        <option value="">--Seleccionar--</option>
+                        {mostrarPlanes.map((planes) => (
+                          <option key={planes._id} value={planes._id}>
+                            {planes.nombre}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
                   </form>
+                  <Button
+                    className="w-full cursor-pointer rounded bg-blue-600 p-3 text-sm font-bold uppercase text-white transition-colors hover:bg-blue-300"
+                    onClick={(e) => handleSubmit(e)}
+                  >
+                    Guardar
+                  </Button>
                 </div>
               </div>
             </div>
@@ -283,4 +322,4 @@ const EditarCliente = () => {
   );
 };
 
-export default EditarCliente;
+export default ModalEditarCliente;

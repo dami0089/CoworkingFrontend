@@ -25,7 +25,6 @@ import Planes from "@/components/clientes/Planes";
 import ModalNuevoPlan from "@/components/clientes/ModalNuevoPlan";
 import Profile from "@/components/clientes/Profile";
 
-import EditarCliente from "@/components/clientes/EditarCliente";
 import ModalModificarPlan from "@/components/clientes/ModalModificarPlan";
 import ListadodeClientesInactivos from "@/components/clientes/ListadodeClientesInactivos";
 import ListadodeProximosVencimientos from "@/components/clientes/ListadodeProximosVencimientos";
@@ -34,6 +33,7 @@ import ListadoAsistenciasProfile from "@/components/clientes/ListadoAsistenciasP
 import ModalEditarAsistencia from "@/components/clientes/ModalEditarAsistencia";
 import ModalEditarUsuario from "@/components/clientes/ModalEditarUsuario";
 import ModalEliminarUsuario from "@/components/clientes/ModalEliminarUsuario";
+import ModalEditarCliente from "@/components/clientes/ModalEditarCliente";
 
 export function Clientes() {
   const {
@@ -85,7 +85,7 @@ export function Clientes() {
       <div className="mt-12">
         <ToastContainer pauseOnFocusLoss={false} />
 
-        <div className="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-4 ">
+        <div className="mb-12 grid gap-x-6 gap-y-10 md:grid-cols-2 xl:grid-cols-4 ">
           <Card onClick={handleModalNuevoCliente} className="cursor-pointer">
             <Card
               variant="gradient"
@@ -324,7 +324,7 @@ export function Clientes() {
         {modalNuevoCliente2 ? <ModalNuevoCliente2 /> : ""}
         {modalResumen ? <ModalResumen /> : ""}
         {modalNuevoPlan ? <ModalNuevoPlan /> : ""}
-        {modalEditarCliente ? <EditarCliente /> : ""}
+        {modalEditarCliente ? <ModalEditarCliente /> : ""}
         {modalModificarPlan ? <ModalModificarPlan /> : ""}
         {modalEditarAsistencia ? <ModalEditarAsistencia /> : ""}
         {modalEditarUsuario ? <ModalEditarUsuario /> : ""}

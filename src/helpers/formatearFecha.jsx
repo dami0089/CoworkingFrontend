@@ -6,11 +6,12 @@ export const formatearFecha = (fecha) => {
     const parsedDate = parseISO(fecha);
     if (!isValid(parsedDate)) {
       console.error("Fecha inválida:", fecha);
-      return "Fecha inválida";
+      return "";
     }
-    return format(parsedDate, "dd/MM/yyyy", { locale: es });
+    // Formatear la fecha para que sea compatible con el input de tipo 'date'
+    return format(parsedDate, "yyyy-MM-dd");
   } catch (error) {
-    console.error("Error al formatear fecha:", error);
-    return "Error al formatear fecha";
+    console.error("Error al formatear fecha para input:", error);
+    return "";
   }
 };

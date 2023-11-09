@@ -25,13 +25,14 @@ import { useEffect, useState } from "react";
 
 import { ToastContainer } from "react-toastify";
 import ModalAgregarUsuario from "./ModalAgregarUsuario";
-import EditarCliente from "./EditarCliente";
+
 import Swal from "sweetalert2";
 import ModalEditarUsuario from "./ModalEditarUsuario";
 import ModalEliminarUsuario from "./ModalEliminarUsuario";
 import ModalNuevoAdicional from "../contable/ModalNuevoAdicional";
 import { formatearFecha } from "@/helpers/formatearFecha";
 import ModalModificarAdicional from "../contable/ModalModificarAdicional";
+import ModalEditarCliente from "./ModalEditarCliente";
 
 export function Profile() {
   const {
@@ -76,15 +77,26 @@ export function Profile() {
     setIdAdicionalModificar,
     actualizoUsuarios,
     setActualizoUsuarios,
+    idClienteAEditar,
+    setIdClienteAEditar,
+    setTelefono,
   } = useClientes();
 
   const [renderizo, setRenderizo] = useState(false);
 
   useEffect(() => {
     obtenerCliente(cuitEditar);
-    // obtenerUs(obtenerUs);
-    setConfiguracionDelCliente("Configuracion del Cliente");
   }, []);
+
+  useEffect(() => {
+    const actualizo = async () => {
+      if (actualizoUsuarios) {
+        await obtenerCliente(cuitEditar);
+        setActualizoUsuarios(false);
+      }
+    };
+    actualizo();
+  }, [actualizoUsuarios]);
 
   useEffect(() => {
     const obtener = async () => {
@@ -179,6 +191,15 @@ export function Profile() {
     setRenderizo(true);
     handleModalEditarCliente();
     setRenderizo(false);
+    setTipo(editarCliente.tipo);
+    setNombre(editarCliente.nombre);
+    setCuit(editarCliente.cuit);
+    setDomicilio(editarCliente.domicilio);
+    setEmailFactura(editarCliente.mailFactura);
+    setTelefono(editarCliente.celular);
+    setFechaVencimiento(editarCliente.fechaVencimiento);
+    setPlanes(editarCliente.planes);
+    setIdClienteAEditar(editarCliente._id);
   };
 
   const handleAdicional = async () => {
@@ -213,10 +234,12 @@ export function Profile() {
                   <Typography
                     variant="small"
                     className={`font-normal ${
-                      isActivo ? "text-green-600" : "text-red-600"
+                      editarCliente.isActivo ? "text-green-600" : "text-red-600"
                     }`}
                   >
-                    {isActivo ? "Cliente Activo" : "Cliente inactivo"}
+                    {editarCliente.isActivo
+                      ? "Cliente Activo"
+                      : "Cliente inactivo"}
                   </Typography>
                 </div>
               </div>
@@ -642,7 +665,7 @@ export function Profile() {
       </>
 
       <ModalAgregarUsuario />
-      <EditarCliente />
+      <ModalEditarCliente />
       <ModalEditarUsuario />
       <ModalEliminarUsuario />
       <ModalNuevoAdicional />

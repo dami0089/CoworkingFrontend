@@ -99,6 +99,10 @@ const ClientesProvider = ({ children }) => {
   const [actualizarListadoVisitante, setActualizarListadoVisitante] =
     useState(false);
 
+  const [idClienteAEditar, setIdClienteAEditar] = useState("");
+
+  const [telefono, setTelefono] = useState("");
+
   const handleModalNuevoUsuario = () => {
     setModalNuevoUsuario(!modalNuevoUsuario);
   };
@@ -157,8 +161,28 @@ const ClientesProvider = ({ children }) => {
         },
       };
       const { data } = await clienteAxios("/usuarios/listado", config);
-      console.log(data);
+
       setUsuarios(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const [clientesTres, setClientesTres] = useState([]);
+
+  const obtenerClientesTresVecesPorSemana = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      const { data } = await clienteAxios("/clientes/tres-veces", config);
+
+      setClientesTres(data);
     } catch (error) {
       console.log(error);
     }
@@ -512,7 +536,53 @@ const ClientesProvider = ({ children }) => {
         setDomicilio("");
         setEmailFactura("");
         setCantidad("");
-        navigate("/inicio/clientes");
+      }, 3000);
+    } catch (error) {
+      toast.error(error, {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+  };
+
+  const editarClientes = async (cliente) => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      await clienteAxios.put(`/clientes/${cliente.id}`, cliente, config);
+
+      toast.success("Cliente Editado correctamente", {
+        position: "top-right",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      setTimeout(() => {
+        setTipo("");
+        setPlanes("");
+        setNombre("");
+        setCuit("");
+        setFechaVencimiento("");
+        setDomicilio("");
+        setEmailFactura("");
+        setCantidad("");
       }, 3000);
     } catch (error) {
       toast.error(error, {
@@ -773,16 +843,8 @@ const ClientesProvider = ({ children }) => {
       };
 
       const { data } = await clienteAxios(`/clientes/obtener/${id}`, config);
-      console.log("obteniendo cliente");
-      console.log(data);
-      setEditarCliente(data.cliente);
-      setTipo(data.cliente.tipo);
-      setNombre(data.cliente.nombre);
-      setCuit(data.cliente.cuit);
-      setDomicilio(data.cliente.domicilio);
-      setEmailFactura(data.cliente.mailFactura);
-      setFechaVencimiento(data.cliente.fechaVencimiento);
-      setIsActivo(data.cliente.isActivo);
+
+      setEditarCliente(data);
     } catch (error) {
       console.log(error);
     }
@@ -1472,6 +1534,13 @@ const ClientesProvider = ({ children }) => {
         obtenerVisitas,
         actualizarListadoVisitante,
         setActualizarListadoVisitante,
+        clientesTres,
+        obtenerClientesTresVecesPorSemana,
+        telefono,
+        setTelefono,
+        editarClientes,
+        idClienteAEditar,
+        setIdClienteAEditar,
       }}
     >
       {children}

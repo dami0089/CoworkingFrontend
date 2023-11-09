@@ -62,6 +62,7 @@ function App() {
           element={<ListadodeClientesInactivos />}
         />
         <Route path="ingresar-visitante" element={<RegistrarClientes />} />
+        {/* <Route path="asistencias" element={<Asisten />} /> */}
       </Route>
 
       <Route path="/proveedores" element={<RutaProtegida />}>

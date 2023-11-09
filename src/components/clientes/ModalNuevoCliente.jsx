@@ -7,51 +7,6 @@ import clienteAxios from "@/configs/clinteAxios";
 import { ArrowLeftCircleIcon } from "@heroicons/react/24/solid";
 
 const TIPO = ["A", "B"];
-const CANTIDAD = [
-  "1",
-  "2",
-  "3",
-  "4",
-  "5",
-  "6",
-  "7",
-  "8",
-  "9",
-  "10",
-  "11",
-  "12",
-  "13",
-  "14",
-  "15",
-  "16",
-  "17",
-  "18",
-  "19",
-  "20",
-  "21",
-  "22",
-  "23",
-  "24",
-  "25",
-  "26",
-  "27",
-  "28",
-  "29",
-  "30",
-  "31",
-  "32",
-  "33",
-  "34",
-  "35",
-  "36",
-  "37",
-  "38",
-  "39",
-  "40",
-  "41",
-  "42",
-  "43",
-];
 
 const ModalResumen = () => {
   const {
@@ -73,7 +28,25 @@ const ModalResumen = () => {
     handleModalNuevoCliente,
     domicilio,
     setDomicilio,
+    planes,
+    setPlanes,
+    obtenerPlanes,
+    mostrarPlanes,
+    nuevoCliente,
+    telefono,
+    setTelefono,
   } = useClientes();
+
+  useEffect(() => {
+    setNombre("");
+    setFechaVencimiento("");
+    setEmailFactura("");
+    setCuit("");
+    setTipo("");
+    setDomicilio("");
+    setPlanes("");
+    setTelefono("");
+  }, []);
 
   //Consultamos la base de datos para saber si el cliente ya esta registrado antes. Si no esta registrado cierra el modal y pasa al modal2
   const consultarBase = async (cuit) => {
@@ -96,6 +69,8 @@ const ModalResumen = () => {
         domicilio: domicilio,
         mailFactura: emailFactura,
         fechaVencimiento: fechaVencimiento,
+        planes: planes,
+        telefono: setTelefono,
       });
 
       handleModalNuevoCliente();
@@ -113,11 +88,18 @@ const ModalResumen = () => {
     }
   };
 
+  useEffect(() => {
+    const mostrar = async () => {
+      await obtenerPlanes();
+    };
+    mostrar();
+  }, []);
+
   //Comprueba que todos los campos esten ok, y de ser asi pasa a consultar si el cuit no corresponde a un usuario ya registrado
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if ([nombre, cuit, emailFactura, fechaVencimiento].includes("")) {
+    if ([nombre, emailFactura, fechaVencimiento, planes].includes("")) {
       toast("⚠️ Todos los campos son obligatorios", {
         position: "top-right",
         autoClose: 1500,
@@ -261,7 +243,11 @@ const ModalResumen = () => {
                         id="cuit"
                         type="text"
                         placeholder={
-                          tipo === "A" ? "Cuit" : tipo === "B" ? "Dni" : ""
+                          tipo === "A"
+                            ? "Cuit"
+                            : tipo === "B"
+                            ? "Dni"
+                            : "Selecciona el tipo de cliente"
                         }
                         className="mt-2 w-full rounded-md border-2 p-2 placeholder-gray-400"
                         value={cuit}
@@ -300,6 +286,23 @@ const ModalResumen = () => {
                         onChange={(e) => setEmailFactura(e.target.value)}
                       />
                     </div>
+
+                    <div className="mb-1">
+                      <label
+                        className="text-sm font-bold uppercase text-gray-700"
+                        htmlFor="tel"
+                      >
+                        Telefono
+                      </label>
+                      <input
+                        id="tel"
+                        type="text"
+                        placeholder="Telefono"
+                        className="mt-2 w-full rounded-md border-2 p-2 placeholder-gray-400"
+                        value={telefono}
+                        onChange={(e) => setTelefono(e.target.value)}
+                      />
+                    </div>
                     <div className="mb-1">
                       <label
                         className="text-sm font-bold uppercase text-gray-700"
@@ -320,44 +323,22 @@ const ModalResumen = () => {
                         className="text-sm font-bold uppercase text-gray-700"
                         htmlFor="cantidad"
                       >
-                        Cantidad de planes
+                        Seleccionar Plan
                       </label>
                       <select
                         id="cantidad"
                         className="mt-2 w-full rounded-md border-2 p-2 placeholder-gray-400"
-                        value={cantidad}
-                        onChange={(e) => setCantidad(e.target.value)}
+                        value={planes}
+                        onChange={(e) => setPlanes(e.target.value)}
                       >
                         <option value="">--Seleccionar--</option>
-                        {CANTIDAD.map((opcion) => (
-                          <option key={opcion}>{opcion}</option>
+                        {mostrarPlanes.map((planes) => (
+                          <option key={planes._id} value={planes._id}>
+                            {planes.nombre}
+                          </option>
                         ))}
                       </select>
                     </div>
-
-                    {/* {cantidad == 1 ? (
-                      <div className="mb-2">
-                        <label
-                          className="text-sm font-bold uppercase text-gray-700"
-                          htmlFor="plan"
-                        >
-                          Plan
-                        </label>
-                        <select
-                          id="plan"
-                          className="mt-2 w-full rounded-md border-2 p-2 placeholder-gray-400"
-                          value={planes}
-                          onChange={(e) => setPlanes(e.target.value)}
-                        >
-                          <option value="">--Seleccionar--</option>
-                          {PLAN.map((opcion) => (
-                            <option key={opcion}>{opcion}</option>
-                          ))}
-                        </select>
-                      </div>
-                    ) : (
-                      ""
-                    )} */}
                   </form>
                   <Button
                     className="w-full cursor-pointer rounded bg-blue-600 p-3 text-sm font-bold uppercase text-white transition-colors hover:bg-blue-300"

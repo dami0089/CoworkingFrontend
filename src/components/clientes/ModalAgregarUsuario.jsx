@@ -5,7 +5,6 @@ import { ToastContainer, toast } from "react-toastify";
 import { Checkbox } from "@material-tailwind/react";
 import clienteAxios from "@/configs/clinteAxios";
 import { ArrowLeftCircleIcon } from "@heroicons/react/24/solid";
-import EditarCliente from "./EditarCliente";
 
 const ModalAgregarUsuario = () => {
   const {
