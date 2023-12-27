@@ -1,6 +1,6 @@
 import { React, useEffect } from "react";
 import { Card } from "@material-tailwind/react";
-import { PlusIcon } from "@heroicons/react/24/outline";
+import { PlusIcon, UserGroupIcon } from "@heroicons/react/24/outline";
 import {
   CalendarDaysIcon,
   CheckBadgeIcon,
@@ -34,6 +34,8 @@ import ModalEliminarUsuario from "@/components/clientes/ModalEliminarUsuario";
 import RegistrarClientes from "@/components/clientes/RegistrarClientes";
 import { useNavigate } from "react-router-dom";
 import ModalEditarCliente from "@/components/clientes/ModalEditarCliente";
+import Cargando from "@/components/deTodos/Cargando";
+import ModalNuevoUsuarioAdmin from "@/components/clientes/ModalNuevoUsuarioAdmin";
 
 export function Clientes() {
   const navigate = useNavigate();
@@ -54,6 +56,8 @@ export function Clientes() {
     modalModificarPlan,
     modalEditarUsuario,
     modalEliminarUsuario,
+    handleModalNuevoUsuarioAdmin,
+    nuevoUsuarioAdmin,
   } = useClientes();
 
   const handleClick = () => {
@@ -103,6 +107,10 @@ export function Clientes() {
   const handleIngresarVisitante = (e) => {
     e.preventDefault();
     navigate("/clientes/ingresar-visitante");
+  };
+
+  const handleModalNuevoUsuarioAdministrador = () => {
+    handleModalNuevoUsuarioAdmin();
   };
 
   return (
@@ -236,7 +244,7 @@ export function Clientes() {
 
         <div className="mt-5 flex flex-wrap justify-between">
           <div
-            className="w-full p-2 hover:cursor-pointer md:w-1/2"
+            className="w-full p-2 hover:cursor-pointer md:w-1/3"
             onClick={(e) => handleInactivos(e)}
           >
             <div className="rounded-2xl bg-white p-4 shadow-lg dark:bg-gray-800">
@@ -255,7 +263,7 @@ export function Clientes() {
             </div>
           </div>
           <div
-            className="w-full p-2 hover:cursor-pointer md:w-1/2"
+            className="w-full p-2 hover:cursor-pointer md:w-1/3"
             onClick={(e) => handleIngresarVisitante(e)}
           >
             <div className="rounded-2xl bg-white p-4 shadow-lg dark:bg-gray-800">
@@ -273,18 +281,37 @@ export function Clientes() {
               </div>
             </div>
           </div>
+          <div
+            className="w-full p-2 hover:cursor-pointer md:w-1/3"
+            onClick={(e) => handleModalNuevoUsuarioAdministrador(e)}
+          >
+            <div className="rounded-2xl bg-white p-4 shadow-lg dark:bg-gray-800">
+              <div className="flex flex-row items-center justify-between gap-4">
+                <div className="flex-shrink-0">
+                  <a href="#" className="relative block">
+                    <UserGroupIcon className="mx-auto h-8 w-8 rounded-full object-cover" />
+                  </a>
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-lg font-medium text-gray-600 dark:text-white">
+                    Nuevo Usuario Admin
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </>
 
-      {/* {cargando ? <Cargando /> : ""} */}
       {modalNuevoCliente ? <ModalNuevoCliente /> : ""}
       {modalNuevoCliente2 ? <ModalNuevoCliente2 /> : ""}
       {modalResumen ? <ModalResumen /> : ""}
       {modalNuevoPlan ? <ModalNuevoPlan /> : ""}
       {modalEditarCliente ? <ModalEditarCliente /> : ""}
-
+      <Cargando />
       {modalEditarAsistencia ? <ModalEditarAsistencia /> : ""}
       {modalEliminarUsuario ? <ModalEliminarUsuario /> : ""}
+      {nuevoUsuarioAdmin ? <ModalNuevoUsuarioAdmin /> : null}
     </>
   );
 }

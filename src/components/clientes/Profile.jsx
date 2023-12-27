@@ -33,6 +33,8 @@ import ModalNuevoAdicional from "../contable/ModalNuevoAdicional";
 import { formatearFecha } from "@/helpers/formatearFecha";
 import ModalModificarAdicional from "../contable/ModalModificarAdicional";
 import ModalEditarCliente from "./ModalEditarCliente";
+import useAuth from "@/hooks/useAuth";
+import Cargando from "../deTodos/Cargando";
 
 export function Profile() {
   const {
@@ -45,7 +47,6 @@ export function Profile() {
     valueProfile,
     setValueProfile,
     obtenerUsuario,
-    cargando,
     setTipo,
     setNombre,
     setCuit,
@@ -84,8 +85,15 @@ export function Profile() {
 
   const [renderizo, setRenderizo] = useState(false);
 
+  const { cargando, handleCargando } = useAuth();
+
   useEffect(() => {
-    obtenerCliente(cuitEditar);
+    const traerData = async () => {
+      handleCargando();
+      await obtenerCliente(cuitEditar);
+      handleCargando();
+    };
+    traerData();
   }, []);
 
   useEffect(() => {
@@ -155,6 +163,7 @@ export function Profile() {
             id: cuitEditar,
             isActivo: isActivo,
           });
+          setActualizoUsuarios(true);
         }
       });
     } else {
@@ -171,6 +180,7 @@ export function Profile() {
             id: cuitEditar,
             isActivo: isActivo,
           });
+          setActualizoUsuarios(true);
         }
       });
     }
@@ -285,11 +295,11 @@ export function Profile() {
                     <div className="mb-2">
                       <Button
                         className={`bg-red-300 ${
-                          isActivo ? "bg-red-500" : "bg-green-500"
+                          editarCliente.isActivo ? "bg-red-500" : "bg-green-500"
                         }`}
                         onClick={(e) => handleClick()}
                       >
-                        {isActivo === true
+                        {editarCliente.isActivo === true
                           ? "Desactivar Cliente"
                           : "Activar Cliente"}
                       </Button>
@@ -664,6 +674,7 @@ export function Profile() {
         </Card>
       </>
 
+      {cargando ? <Cargando /> : ""}
       <ModalAgregarUsuario />
       <ModalEditarCliente />
       <ModalEditarUsuario />

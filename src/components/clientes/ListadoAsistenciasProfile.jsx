@@ -14,6 +14,8 @@ import { formatearHora } from "@/helpers/formatearHora";
 import Swal from "sweetalert2";
 import { ToastContainer } from "react-toastify";
 import { ArrowLeftCircleIcon } from "@heroicons/react/24/solid";
+import useAuth from "@/hooks/useAuth";
+import Cargando from "../deTodos/Cargando";
 
 const ListadoAsistenciasProfile = () => {
   const {
@@ -35,9 +37,13 @@ const ListadoAsistenciasProfile = () => {
 
   const [renderizo, setRenderizo] = useState(false);
 
+  const { handleCargando, cargando } = useAuth();
+
   useEffect(() => {
     const obtener = async () => {
+      handleCargando();
       await obtenerAsistencias(idAsistencias);
+      handleCargando();
     };
     obtener();
   }, []);
@@ -111,7 +117,7 @@ const ListadoAsistenciasProfile = () => {
           ></svg>
         </button>
       </div>
-      <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
+      <CardBody className="overflow-x-scroll px-0 pb-2 pt-0">
         <table className="w-full min-w-[640px] table-auto">
           <thead>
             <tr>
@@ -119,7 +125,7 @@ const ListadoAsistenciasProfile = () => {
                 (el) => (
                   <th
                     key={el}
-                    className="border-b border-blue-gray-50 py-3 px-6 text-left"
+                    className="border-b border-blue-gray-50 px-6 py-3 text-left"
                   >
                     <Typography
                       variant="small"
@@ -196,6 +202,7 @@ const ListadoAsistenciasProfile = () => {
           </tbody>
         </table>
       </CardBody>
+      {cargando ? <Cargando /> : ""}
     </>
   );
 };

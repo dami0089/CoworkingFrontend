@@ -1,4 +1,4 @@
-import { useState, useEffect, createContext } from "react";
+import { useState, useEffect, createContext, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import clienteAxios from "@/configs/clinteAxios";
 
@@ -6,10 +6,14 @@ const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
   const [auth, setAuth] = useState({});
-  const [cargando, setCargando] = useState(true);
+  const [cargando, setCargando] = useState(false);
 
   const [modalQr, setModalQr] = useState(false);
   const [autenticado, setAutenticado] = useState("");
+
+  const handleCargando = useCallback(() => {
+    setCargando((prevCargando) => !prevCargando);
+  }, []);
 
   const handleModalQr = () => {
     setModalQr(!modalQr);
@@ -92,6 +96,7 @@ const AuthProvider = ({ children }) => {
         handleModalQr,
         consultarAutenticacion,
         autenticado,
+        handleCargando,
       }}
     >
       {children}

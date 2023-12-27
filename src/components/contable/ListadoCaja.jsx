@@ -78,7 +78,7 @@ const ListadoCaja = () => {
     let total = 0;
 
     movimientos.forEach((movimiento) => {
-      if (movimiento.tipo == "Ingreso" && movimiento.entidad == "Banco") {
+      if (movimiento.tipo == "Ingreso" && movimiento.entidad == "Efectivo") {
         total += parseDecimal(movimiento.precioNeto);
       }
     });
@@ -89,7 +89,7 @@ const ListadoCaja = () => {
     let totalG = 0;
 
     movimientos.forEach((movimiento) => {
-      if (movimiento.tipo === "Gasto" && movimiento.entidad === "Banco") {
+      if (movimiento.tipo === "Gasto" && movimiento.entidad === "Efectivo") {
         totalG += parseDecimal(movimiento.precioNeto);
       }
     });

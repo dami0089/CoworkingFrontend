@@ -12,11 +12,9 @@ import { IconButton } from "@material-tailwind/react";
 import { useMaterialTailwindController, setOpenConfigurator } from "@/context";
 
 const RutaProtegida = () => {
-  const { auth, cargando } = useAuth();
+  const { auth } = useAuth();
   const [controller, dispatch] = useMaterialTailwindController();
   const { sidenavType } = controller;
-
-  if (cargando) return "Cargando...";
 
   return (
     <>

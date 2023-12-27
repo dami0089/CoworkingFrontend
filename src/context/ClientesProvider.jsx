@@ -99,12 +99,19 @@ const ClientesProvider = ({ children }) => {
   const [actualizarListadoVisitante, setActualizarListadoVisitante] =
     useState(false);
 
+  const [nuevoUsuarioAdmin, setNuevoUsuarioAdmin] = useState(false);
+
   const [idClienteAEditar, setIdClienteAEditar] = useState("");
+  const [rol, setRol] = useState("");
 
   const [telefono, setTelefono] = useState("");
 
   const handleModalNuevoUsuario = () => {
     setModalNuevoUsuario(!modalNuevoUsuario);
+  };
+
+  const handleModalNuevoUsuarioAdmin = () => {
+    setNuevoUsuarioAdmin(!nuevoUsuarioAdmin);
   };
 
   const { auth } = useAuth();
@@ -515,9 +522,9 @@ const ClientesProvider = ({ children }) => {
         },
       };
 
-      await clienteAxios.post("/clientes", cliente, config);
+      const { data } = await clienteAxios.post("/clientes", cliente, config);
 
-      toast.success("Cliente creado correctamente", {
+      toast.success(data.msg, {
         position: "top-right",
         autoClose: 1500,
         hideProgressBar: false,
@@ -538,7 +545,7 @@ const ClientesProvider = ({ children }) => {
         setCantidad("");
       }, 3000);
     } catch (error) {
-      toast.error(error, {
+      toast.error(error.response.data.msg, {
         position: "top-right",
         autoClose: 2000,
         hideProgressBar: false,
@@ -708,6 +715,60 @@ const ClientesProvider = ({ children }) => {
           cuit,
           plan,
         },
+        config
+      );
+      toast.success(data.msg, {
+        position: "top-right",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    } catch (error) {
+      toast.error(error.response.data.msg, {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+  };
+
+  const guardarUsuarioAdmin = async (
+    nombre,
+    apellido,
+    dni,
+    email,
+    celu,
+    rol
+  ) => {
+    const info = {
+      nombre: nombre,
+      apellido: apellido,
+      dni: dni,
+      email: email,
+      celu: celu,
+      rol: rol,
+    };
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      const { data } = await clienteAxios.post(
+        `/usuarios/administrador`,
+        info,
         config
       );
       toast.success(data.msg, {
@@ -1541,6 +1602,12 @@ const ClientesProvider = ({ children }) => {
         editarClientes,
         idClienteAEditar,
         setIdClienteAEditar,
+        setClientes,
+        handleModalNuevoUsuarioAdmin,
+        nuevoUsuarioAdmin,
+        rol,
+        setRol,
+        guardarUsuarioAdmin,
       }}
     >
       {children}

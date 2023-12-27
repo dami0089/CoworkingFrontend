@@ -1,37 +1,29 @@
-import {
-  Avatar,
-  Button,
-  Card,
-  CardBody,
-  Progress,
-  Tooltip,
-  Typography,
-} from "@material-tailwind/react";
+import { Button, Card, CardBody, Typography } from "@material-tailwind/react";
 
 import React, { useEffect } from "react";
 import { projectsTableData } from "@/data";
 import useClientes from "@/hooks/useClientes";
 import { formatearFecha } from "@/helpers/formatearFecha";
 import { useNavigate } from "react-router-dom";
-import { setOpenConfigurator } from "@/context";
-import { ArrowLeftCircleIcon } from "@heroicons/react/24/solid";
+import useAuth from "@/hooks/useAuth";
+import Cargando from "../deTodos/Cargando";
 
 const ListadodeClientes = () => {
   const {
     clientes,
-    setObtenerUs,
-    setSeleccion,
     handleModalEditarCliente,
     setCuitEditar,
-    cuitEditar,
-    // obtenerUser,
-    setObtenerUsuario,
     obtenerClientes,
+    setClientes,
   } = useClientes();
+
+  const { handleCargando, cargando } = useAuth();
 
   useEffect(() => {
     const obtenerInfo = async () => {
+      handleCargando();
       await obtenerClientes();
+      handleCargando();
     };
     obtenerInfo();
   }, []);
@@ -160,6 +152,7 @@ const ListadodeClientes = () => {
             </div>
           </CardBody>
         </Card>
+        {cargando ? <Cargando /> : ""}
       </div>
     </>
   );

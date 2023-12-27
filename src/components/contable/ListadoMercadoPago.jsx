@@ -17,20 +17,11 @@ import { ToastContainer } from "react-toastify";
 
 const ListadoMercadoPago = () => {
   const {
-    handleModalNuevoMovimiento,
     movimientos,
-    obtenerMovimiento,
-    movimiento,
     handleModalEditarMovimiento,
     obtenerMovimientos,
-    setSelectorContable,
-    renderizoMovimientos,
-    setRenderizoMovimientos,
-
     modalEditarMovimiento,
     setPrecioNeto,
-    renderMovimiento,
-    setRenderMovimiento,
     setIdMovimiento,
     setEntidad,
     setDescripcion,
@@ -80,7 +71,7 @@ const ListadoMercadoPago = () => {
     let total = 0;
 
     movimientos.forEach((movimiento) => {
-      if (movimiento.tipo == "Ingreso" && movimiento.entidad == "Banco") {
+      if (movimiento.tipo == "Ingreso" && movimiento.entidad == "Mp") {
         total += parseDecimal(movimiento.precioNeto);
       }
     });
@@ -91,7 +82,7 @@ const ListadoMercadoPago = () => {
     let totalG = 0;
 
     movimientos.forEach((movimiento) => {
-      if (movimiento.tipo === "Gasto" && movimiento.entidad === "Banco") {
+      if (movimiento.tipo === "Gasto" && movimiento.entidad === "Mp") {
         totalG += parseDecimal(movimiento.precioNeto);
       }
     });
