@@ -1115,11 +1115,7 @@ const ClientesProvider = ({ children }) => {
           Authorization: `Bearer ${token}`,
         },
       };
-      const { data } = await clienteAxios.put(
-        `/clientes/editar-plan/${plan.id}`,
-        plan,
-        config
-      );
+      await clienteAxios.post(`/clientes/editar-plan/${plan.id}`, plan, config);
 
       //Mostrar la alerta
       toast.success("Plan actualizado correctamente", {

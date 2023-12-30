@@ -45,7 +45,6 @@ const Planes = () => {
 
   const handleClick = async (id) => {
     obtenerPlan(id);
-
     handleModalModificarPlan();
   };
 

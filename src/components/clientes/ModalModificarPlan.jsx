@@ -221,7 +221,10 @@ const ModalModificarPlan = () => {
                       />
                     </div>
                   </form>
-                  <Button className="mb-4 w-full cursor-pointer rounded bg-blue-600 p-3 text-sm font-bold uppercase text-white transition-colors hover:bg-blue-300">
+                  <Button
+                    onClick={(e) => handleSubmit(e)}
+                    className="mb-4 w-full cursor-pointer rounded bg-blue-600 p-3 text-sm font-bold uppercase text-white transition-colors hover:bg-blue-300"
+                  >
                     Guardar Cambios
                   </Button>
                   <Button
