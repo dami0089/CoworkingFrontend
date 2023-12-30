@@ -8,13 +8,13 @@ import {
   Typography,
 } from "@material-tailwind/react";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { projectsTableData } from "@/data";
 import useClientes from "@/hooks/useClientes";
 import { formatearFecha } from "@/helpers/formatearFecha";
 import { useNavigate } from "react-router-dom";
 import { setOpenConfigurator } from "@/context";
-import { ArrowLeftCircleIcon } from "@heroicons/react/24/solid";
+import { ArrowLeftCircleIcon, EyeIcon } from "@heroicons/react/24/solid";
 
 const ListadodeClientesInactivos = () => {
   const {
@@ -44,18 +44,45 @@ const ListadodeClientesInactivos = () => {
     obtenerInfo();
   }, []);
 
-  const handleClickEditar = async (e, _id) => {
+  const handleClickEditar = async (e, _id, usuarios) => {
     e.preventDefault();
     await setCuitEditar(_id);
-    handleModalEditarCliente();
-    console.log("editando");
+    // obtenerUser([usuarios]);
+    navigate("/clientes/perfil");
+  };
+
+  const [nombreFiltrado, setNombreFiltrado] = useState("");
+  const [clientesFiltrados, setClientesFiltrados] = useState([]);
+
+  const handleClienteChange = (e) => {
+    const inputValue = e.target.value;
+    setNombreFiltrado(inputValue);
+
+    const coincidencias = clientes.filter((cliente) =>
+      cliente.nombre.toLowerCase().includes(inputValue.toLowerCase())
+    );
+
+    setClientesFiltrados(coincidencias);
   };
 
   return (
     <>
-      <Typography className="mb-4 ml-4 mt-8 font-bold">
-        Listado De Clientes Inactivos
-      </Typography>
+      <div className="mb-3 mt-8 flex items-center justify-between text-black">
+        <Typography className="ml-3  font-bold">
+          Listado de clientes inactivos
+        </Typography>
+
+        <div className="flex items-center space-x-4">
+          <input
+            className="mb-4 mt-2 rounded-md border-2 p-2 placeholder-gray-400"
+            type="text"
+            autoComplete="off"
+            placeholder="Filtrar por cliente"
+            value={nombreFiltrado}
+            onChange={handleClienteChange}
+          />
+        </div>
+      </div>
 
       <div className="mb-4 grid grid-cols-1 gap-6  xl:grid-cols-3">
         <Card className="overflow-hidden xl:col-span-3">
@@ -82,7 +109,7 @@ const ListadodeClientesInactivos = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {clientes
+                  {(nombreFiltrado ? clientesFiltrados : clientes)
                     .filter((cliente) => cliente.isActivo == false) // filtrar solo los clientes con isActivo = true
                     .map(
                       (
@@ -131,37 +158,14 @@ const ListadodeClientesInactivos = () => {
                               </Typography>
                             </td>
                             <td className={className}>
-                              <Typography
-                                variant="small"
-                                className="mx-2 flex text-xs font-medium text-blue-gray-600"
-                              >
-                                <Button
-                                  color="blue"
-                                  className="mx-1 items-center gap-4 px-6 capitalize"
-                                  fullWidth
-                                  onClick={(e) => handleClick(e, _id, usuarios)}
-                                >
-                                  <Typography
-                                    color="inherit"
-                                    className="font-medium capitalize"
-                                  >
-                                    ver
-                                  </Typography>
-                                </Button>
-                                <Button
-                                  color="gradient"
-                                  className="items-center gap-4 px-6 capitalize"
-                                  fullWidth
-                                  onClick={(e) => handleClickEditar(e, _id)}
-                                >
-                                  <Typography
-                                    color="inherit"
-                                    className="font-medium capitalize"
-                                  >
-                                    editar
-                                  </Typography>
-                                </Button>
-                              </Typography>
+                              <div className="flex items-center justify-center gap-4">
+                                <EyeIcon
+                                  className="h-8 w-8 hover:cursor-pointer"
+                                  onClick={(e) =>
+                                    handleClickEditar(e, _id, usuarios)
+                                  }
+                                />
+                              </div>
                             </td>
                           </tr>
                         );

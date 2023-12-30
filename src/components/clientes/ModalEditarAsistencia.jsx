@@ -5,6 +5,9 @@ import { ToastContainer, toast } from "react-toastify";
 
 import useClientes from "@/hooks/useClientes";
 import { formatearFecha } from "@/helpers/formatearFecha";
+import { formatearFechaParaInput } from "@/helpers/formatearFechaParaInputs";
+import { Button } from "@material-tailwind/react";
+import Swal from "sweetalert2";
 
 const ModalEditarAsistencia = () => {
   const {
@@ -17,6 +20,9 @@ const ModalEditarAsistencia = () => {
     editarAsistencia,
     obtenerClientes,
     setRenovarListadoAsistenciaProfile,
+    actualizoListadoAsistencias,
+    setActualizoListadoAsistencias,
+    eliminarAsistencia,
   } = useClientes();
 
   useEffect(() => {
@@ -39,12 +45,33 @@ const ModalEditarAsistencia = () => {
     }
 
     await editarAsistencia(idModificarAsistencia, fechaAsistencia);
+    setActualizoListadoAsistencias(true);
     setRenovarListadoAsistenciaProfile(true);
   };
 
   const fechaFormateada = new Date(fechaAsistenciaModificar).toLocaleDateString(
     "sv-SE"
   );
+
+  const handleBorrar = async (e) => {
+    e.preventDefault();
+    Swal.fire({
+      title: "Seguro queres borrar esta asistencia?",
+      text: "Esta accion es irrecuperable",
+      icon: "question",
+      cancelButtonText: "Cancelar",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Si",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        await eliminarAsistencia(idModificarAsistencia);
+        handleModalEditarAsistencia();
+        setActualizoListadoAsistencias(true);
+      }
+    });
+  };
 
   return (
     <Transition.Root show={modalEditarAsistencia} as={Fragment}>
@@ -53,7 +80,7 @@ const ModalEditarAsistencia = () => {
         className="fixed inset-0 z-10 overflow-y-auto"
         onClose={handleModalEditarAsistencia}
       >
-        <div className="flex min-h-screen items-end justify-center px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+        <div className="flex min-h-screen items-end justify-center px-4 pb-20 pt-4 text-center sm:block sm:p-0">
           <ToastContainer pauseOnFocusLoss={false} />
 
           <Transition.Child
@@ -85,8 +112,8 @@ const ModalEditarAsistencia = () => {
             leaveFrom="opacity-100 translate-y-0 sm:scale-100"
             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
           >
-            <div className="inline-block transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6 sm:align-middle">
-              <div className="absolute top-0 right-0 hidden pt-4 pr-4 sm:block">
+            <div className="inline-block transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6 sm:align-middle">
+              <div className="absolute right-0 top-0 hidden pr-4 pt-4 sm:block">
                 <button
                   type="button"
                   className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
@@ -109,7 +136,7 @@ const ModalEditarAsistencia = () => {
               </div>
 
               <div className="sm:flex sm:items-start">
-                <div className="mt-3 w-full text-center sm:mt-0 sm:ml-0 sm:text-left">
+                <div className="mt-3 w-full text-center sm:ml-0 sm:mt-0 sm:text-left">
                   <Dialog.Title
                     as="h3"
                     className="text-xl font-bold leading-6 text-gray-900"
@@ -117,7 +144,7 @@ const ModalEditarAsistencia = () => {
                     Editar Asistencia
                   </Dialog.Title>
 
-                  <form className="my-2 mx-2" onSubmit={handleSubmit}>
+                  <form className="mx-2 my-2">
                     <div className="mb-1">
                       <label
                         className="text-sm font-bold uppercase text-gray-700"
@@ -130,19 +157,27 @@ const ModalEditarAsistencia = () => {
                         type="date"
                         placeholder="Numero de Factura"
                         className="mt-2 w-full rounded-md border-2 p-2 placeholder-gray-400"
-                        value={fechaFormateada}
+                        value={formatearFechaParaInput(
+                          fechaAsistenciaModificar
+                        )}
                         onChange={(e) =>
                           setFechaAsistenciaModificar(e.target.value)
                         }
                       />
                     </div>
-
-                    <input
-                      type="submit"
-                      className="w-full cursor-pointer rounded bg-blue-600 p-3 text-sm font-bold uppercase text-white transition-colors hover:bg-blue-300"
-                      value={"Guardar"}
-                    />
                   </form>
+                  <Button
+                    onClick={(e) => handleSubmit(e)}
+                    className="mb-4 mt-4 w-full cursor-pointer rounded bg-blue-600 p-3 text-sm font-bold uppercase text-white transition-colors hover:bg-blue-300"
+                  >
+                    Guardar
+                  </Button>
+                  <Button
+                    onClick={(e) => handleBorrar(e)}
+                    className="w-full cursor-pointer rounded bg-red-600 p-3 text-sm font-bold uppercase text-white transition-colors hover:bg-red-300"
+                  >
+                    Borrar Asistencia
+                  </Button>
                 </div>
               </div>
             </div>

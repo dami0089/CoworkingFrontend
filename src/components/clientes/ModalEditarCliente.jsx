@@ -6,6 +6,7 @@ import { Button, Checkbox } from "@material-tailwind/react";
 import clienteAxios from "@/configs/clinteAxios";
 import { ArrowLeftCircleIcon } from "@heroicons/react/24/solid";
 import { formatearFecha } from "@/helpers/formatearFecha";
+import { formatearFechaParaInput } from "@/helpers/formatearFechaParaInputs";
 
 const TIPO = ["A", "B"];
 
@@ -78,7 +79,7 @@ const ModalEditarCliente = () => {
       mailFactura: emailFactura,
       fechaVencimiento: fechaVencimiento,
       planes: planes,
-      telefono: setTelefono,
+      celular: telefono,
     });
     setActualizoUsuarios(true);
     handleModalEditarCliente();
@@ -280,7 +281,7 @@ const ModalEditarCliente = () => {
                         id="fecha-venc"
                         type="date"
                         className="mt-2 w-full rounded-md border-2 p-2 placeholder-gray-400"
-                        value={formatearFecha(fechaVencimiento)}
+                        value={formatearFechaParaInput(fechaVencimiento)}
                         onChange={(e) => setFechaVencimiento(e.target.value)}
                       />
                     </div>

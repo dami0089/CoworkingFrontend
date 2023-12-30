@@ -8,7 +8,7 @@ import {
   Typography,
 } from "@material-tailwind/react";
 import { useMaterialTailwindController, setOpenSidenav } from "@/context";
-import { useEffect, useState } from "react";
+import logo from "/img/Logo-en-Blanco.png";
 
 export function Sidenav({ brandImg, brandName, routes }) {
   const location = useLocation();
@@ -33,7 +33,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
         }`}
       >
         <div className="flex items-center gap-4 px-8 py-6">
-          <Avatar src={"/public/img/Logo-en-Blanco.png"} size="sm" />
+          <Avatar src={logo} size="sm" />
           <Typography
             variant="h6"
             color={sidenavType === "dark" ? "white" : "blue-gray"}

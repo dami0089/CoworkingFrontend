@@ -1,8 +1,11 @@
 import {
+  ArrowPathIcon,
   ArrowTrendingDownIcon,
   ArrowTrendingUpIcon,
   BanknotesIcon,
   BuildingStorefrontIcon,
+  EyeIcon,
+  FunnelIcon,
   HomeModernIcon,
   PlusIcon,
 } from "@heroicons/react/24/solid";
@@ -14,16 +17,14 @@ import useContable from "@/hooks/useContable";
 import { formatearFecha } from "@/helpers/formatearFecha";
 import { StatisticsCard } from "@/widgets/cards";
 import { ToastContainer } from "react-toastify";
+import ModalFiltrarListados from "./ModalFiltrarListados";
+import Cargando from "../deTodos/Cargando";
 
 const ListadoCaja = () => {
   const {
-    handleModalNuevoMovimiento,
     movimientos,
-    obtenerMovimiento,
-    movimiento,
     handleModalEditarMovimiento,
     obtenerMovimientos,
-    setSelectorContable,
     modalEditarMovimiento,
     renderMovimiento,
     setRenderMovimiento,
@@ -34,6 +35,11 @@ const ListadoCaja = () => {
     setTipo,
     setIdCliente,
     setIdProveedor,
+    setEntidadFiltrar,
+    modalFiltrar,
+    handleFiltro,
+    dataDashEntidad,
+    obtenerDashEntidad,
   } = useContable();
 
   const [totalIngresos, setTotalIngresos] = useState("");
@@ -64,46 +70,48 @@ const ListadoCaja = () => {
 
   useEffect(() => {
     const traerInfo = async () => {
-      await obtenerMovimientos();
+      await obtenerMovimientos("Efectivo");
     };
     traerInfo();
   }, []);
+
+  useEffect(() => {
+    const traerInfo = async () => {
+      await obtenerDashEntidad("Efectivo");
+    };
+    traerInfo();
+  }, []);
+
+  useEffect(() => {
+    const traerInfo = async () => {
+      if (renderMovimiento) {
+        await obtenerDashEntidad("Efectivo");
+        setRenderMovimiento(false);
+      }
+    };
+    traerInfo();
+  }, [renderMovimiento]);
+
+  useEffect(() => {
+    const traerInfo = async () => {
+      if (renderMovimiento) {
+        await obtenerMovimientos("Efectivo");
+        setRenderMovimiento(false);
+      }
+    };
+    traerInfo();
+  }, [renderMovimiento]);
 
   function parseDecimal(str) {
     if (!str) return 0; // Si str es null, undefined o una cadena vacía, devuelve 0
     return parseFloat(str.replace(",", "."));
   }
 
-  useEffect(() => {
-    let total = 0;
-
-    movimientos.forEach((movimiento) => {
-      if (movimiento.tipo == "Ingreso" && movimiento.entidad == "Efectivo") {
-        total += parseDecimal(movimiento.precioNeto);
-      }
-    });
-    setTotalIngresos(total.toFixed(2));
-  }, []);
-
-  useEffect(() => {
-    let totalG = 0;
-
-    movimientos.forEach((movimiento) => {
-      if (movimiento.tipo === "Gasto" && movimiento.entidad === "Efectivo") {
-        totalG += parseDecimal(movimiento.precioNeto);
-      }
-    });
-    setTotalGastos(totalG.toFixed(2));
-    setCalculoTotal(true);
-  }, []);
-
-  useEffect(() => {
-    if (calculoTotal) {
-      let totalB = parseDecimal(totalIngresos) - parseDecimal(totalGastos);
-      setTotalDisponible(totalB.toFixed(2));
-      setCalculoTotal(false);
-    }
-  }, [calculoTotal]);
+  const handleF = (e) => {
+    e.preventDefault();
+    setEntidadFiltrar("Efectivo");
+    handleFiltro();
+  };
 
   return (
     <>
@@ -114,7 +122,9 @@ const ListadoCaja = () => {
           icon={<ArrowTrendingDownIcon />}
           footer={
             <Typography className="text-center font-normal text-blue-gray-600">
-              <strong className="text-red-500">$ {totalGastos} </strong>
+              <strong className="text-red-500">
+                $ {dataDashEntidad.gastado ? dataDashEntidad.gastado : "-"}{" "}
+              </strong>
             </Typography>
           }
         />
@@ -124,7 +134,9 @@ const ListadoCaja = () => {
           icon={<ArrowTrendingUpIcon />}
           footer={
             <Typography className="text-center font-normal text-blue-gray-600">
-              <strong className="text-green-500">$ {totalIngresos} </strong>
+              <strong className="text-green-500">
+                $ {dataDashEntidad.ingresos ? dataDashEntidad.ingresos : "-"}{" "}
+              </strong>
             </Typography>
           }
         />
@@ -134,15 +146,27 @@ const ListadoCaja = () => {
           icon={<HomeModernIcon />}
           footer={
             <Typography className="text-center font-normal text-blue-gray-600">
-              <strong className=" text-blue-500">$ {totalDisponible} </strong>
+              <strong className=" text-blue-500">
+                ${" "}
+                {dataDashEntidad.disponible ? dataDashEntidad.disponible : "-"}{" "}
+              </strong>
             </Typography>
           }
         />
       </div>
       <ToastContainer pauseOnFocusLoss={false} />
 
-      <div className="mb-4 mt-8 grid grid-cols-1 gap-6  xl:grid-cols-3">
+      <div className=" mr-4 mt-8 flex justify-between">
         <Typography className="ml-4 font-bold">Listado Caja</Typography>
+        <div className="flex">
+          <ArrowPathIcon className="mr-4 h-8 w-8 hover:cursor-pointer" />
+          <FunnelIcon
+            className="h-8 w-8 text-gray-700 hover:cursor-pointer hover:text-gray-400"
+            onClick={(e) => handleF(e)}
+          />
+        </div>
+      </div>
+      <div className="mb-4 mt-8 grid grid-cols-1 gap-6  xl:grid-cols-3">
         <Card className="overflow-hidden xl:col-span-3">
           <CardBody className="overflow-x-scroll px-0 pb-2 pt-0 text-center">
             <div className="max-h-[78vh] overflow-y-auto">
@@ -159,7 +183,7 @@ const ListadoCaja = () => {
                     ].map((el) => (
                       <th
                         key={el}
-                        className="border-b border-blue-gray-50 px-6 py-3 text-left"
+                        className="border-b border-blue-gray-50 px-6 py-3 text-center"
                       >
                         <Typography
                           variant="small"
@@ -201,7 +225,7 @@ const ListadoCaja = () => {
                             <>
                               <tr key={_id}>
                                 <td className={className}>
-                                  <div className="flex items-center gap-4">
+                                  <div className="flex items-center justify-center gap-4">
                                     <Typography
                                       variant="small"
                                       color="blue-gray"
@@ -249,14 +273,9 @@ const ListadoCaja = () => {
                                   </Typography>
                                 </td>
                                 <td className={className}>
-                                  <Typography
-                                    variant="small"
-                                    className="mx-2 flex text-xs font-medium text-blue-gray-600"
-                                  >
-                                    <Button
-                                      color="gradient"
-                                      className="items-center gap-4 px-6 capitalize"
-                                      fullWidth
+                                  <div className="flex items-center justify-center gap-4">
+                                    <EyeIcon
+                                      className="h-8 w-8 hover:cursor-pointer"
                                       onClick={(e) =>
                                         handleClick(
                                           e,
@@ -270,15 +289,8 @@ const ListadoCaja = () => {
                                           precioNeto
                                         )
                                       }
-                                    >
-                                      <Typography
-                                        color="inherit"
-                                        className="font-medium capitalize"
-                                      >
-                                        editar
-                                      </Typography>
-                                    </Button>
-                                  </Typography>
+                                    />
+                                  </div>
                                 </td>
                               </tr>
                             </>
@@ -295,6 +307,8 @@ const ListadoCaja = () => {
           </CardBody>
         </Card>
         {modalEditarMovimiento ? <ModalEditarMovimientos /> : ""}
+        {modalFiltrar ? <ModalFiltrarListados /> : null}
+        <Cargando />
       </div>
     </>
   );

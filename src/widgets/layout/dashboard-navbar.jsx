@@ -112,7 +112,7 @@ export function DashboardNavbar() {
         <div className="capitalize">
           {" "}
           <div className="mr-auto md:mr-4 md:w-56">
-            <Input label="Buscar cliente" />
+            {/* <Input label="Buscar cliente" /> */}
           </div>
         </div>
         <div className="flex items-center">

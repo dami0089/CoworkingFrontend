@@ -40,12 +40,20 @@ const ContableProvider = ({ children }) => {
   const [renderMovimiento, setRenderMovimiento] = useState(false);
   const [selectorContable, setSelectorContable] = useState(1);
   const [idMovimiento, setIdMovimiento] = useState("");
+  const [modalFiltrar, setModalFiltrar] = useState(false);
+  const [mostrarFiltro, setMostrarFiltro] = useState(false);
+  const [entidadFiltrar, setEntidadFiltrar] = useState("");
+  const [mesFiltrar, setMesFiltrar] = useState("");
+  const [anoFiltrar, setAnoFiltrar] = useState("");
 
+  const handleFiltro = () => {
+    setModalFiltrar(!modalFiltrar);
+  };
   // const { auth } = useAuth();
 
   // Este effect esta para buscar ej la base el listado de movimientos al abrir la seccion movimientos
 
-  const obtenerMovimientos = async () => {
+  const obtenerMovimientos = async (entidad) => {
     try {
       const token = localStorage.getItem("token");
       if (!token) return;
@@ -56,8 +64,89 @@ const ContableProvider = ({ children }) => {
         },
       };
 
-      const { data } = await clienteAxios("/contable", config);
+      const { data } = await clienteAxios.post(
+        "/contable/obtener-movimientos-entidad",
+        { entidad },
+        config
+      );
       setMovimientos(data.reverse());
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const [dashContable, setDashContable] = useState([]);
+
+  const obtenerDashContable = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      const { data } = await clienteAxios.get(
+        "/contable/obtener-dash-contable",
+
+        config
+      );
+      console.log(data.dash);
+      setDashContable(data.dash);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const [dataDashEntidad, setDataDashEntidad] = useState([]);
+
+  const obtenerDashEntidad = async (entidad) => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      const { data } = await clienteAxios.post(
+        `/contable/obtener-dash-contable-entidad/${entidad}`,
+        {},
+        config
+      );
+      console.log(data.dash);
+      setDataDashEntidad(data.dash);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const obtenerDashEntidadFiltrado = async (entidad, mes, ano) => {
+    const info = {
+      entidad,
+      mes,
+      ano,
+    };
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      const { data } = await clienteAxios.post(
+        `/contable/obtener-dash-contable-entidad-filtrado/`,
+        info,
+        config
+      );
+      setDataDashEntidad(data.dash);
     } catch (error) {
       console.log(error);
     }
@@ -250,6 +339,79 @@ const ContableProvider = ({ children }) => {
     }, 500);
   };
 
+  const nuevoPagoCliente = async (gasto) => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      await clienteAxios.post("/contable/pago-cliente", gasto, config);
+
+      toast.success("Pago registrado correctamente", {
+        position: "top-right",
+        autoClose: 500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      setTimeout(() => {
+        setTipo("");
+        setNumeroFactura("");
+        setDescripcion("");
+        setPrecioBruto("");
+        setEntidad("");
+        setIva("");
+        setPrecioNeto("");
+      }, 500);
+    } catch (error) {
+      toast.error(error, {
+        position: "top-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+  };
+
+  const obtenerMovimientosFiltrados = async (entidad, mes, ano) => {
+    const info = {
+      entidad,
+      mes,
+      ano,
+    };
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      const { data } = await clienteAxios.post(
+        "/contable/filtrar-movimientos",
+        { info },
+        config
+      );
+      setMovimientos(data.reverse());
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <ContableContext.Provider
       value={{
@@ -296,7 +458,24 @@ const ContableProvider = ({ children }) => {
         selectorContable,
         setSelectorContable,
         idMovimiento,
+        nuevoPagoCliente,
         setIdMovimiento,
+        handleFiltro,
+        modalFiltrar,
+        obtenerMovimientosFiltrados,
+        mostrarFiltro,
+        setMostrarFiltro,
+        entidadFiltrar,
+        setEntidadFiltrar,
+        mesFiltrar,
+        setMesFiltrar,
+        anoFiltrar,
+        setAnoFiltrar,
+        dashContable,
+        obtenerDashContable,
+        dataDashEntidad,
+        obtenerDashEntidad,
+        obtenerDashEntidadFiltrado,
       }}
     >
       {children}

@@ -1,8 +1,11 @@
 import {
+  ArrowPathIcon,
   ArrowTrendingDownIcon,
   ArrowTrendingUpIcon,
   BanknotesIcon,
   BuildingStorefrontIcon,
+  EyeIcon,
+  FunnelIcon,
   HomeModernIcon,
   PlusIcon,
 } from "@heroicons/react/24/solid";
@@ -14,6 +17,8 @@ import { formatearFecha } from "@/helpers/formatearFecha";
 import { StatisticsCard } from "@/widgets/cards";
 import ModalEditarMovimientos from "./ModalEditarMovimientos";
 import { ToastContainer } from "react-toastify";
+import ModalFiltrarListados from "./ModalFiltrarListados";
+import Cargando from "../deTodos/Cargando";
 
 const ListadoMercadoPago = () => {
   const {
@@ -28,6 +33,13 @@ const ListadoMercadoPago = () => {
     setTipo,
     setIdCliente,
     setIdProveedor,
+    setRenderMovimiento,
+    renderMovimiento,
+    setEntidadFiltrar,
+    handleFiltro,
+    modalFiltrar,
+    dataDashEntidad,
+    obtenerDashEntidad,
   } = useContable();
 
   const [totalIngresos, setTotalIngresos] = useState("");
@@ -57,46 +69,43 @@ const ListadoMercadoPago = () => {
   };
   useEffect(() => {
     const traerInfo = async () => {
-      await obtenerMovimientos();
+      await obtenerMovimientos("Mp");
     };
     traerInfo();
   }, []);
 
-  function parseDecimal(str) {
-    if (!str) return 0; // Si str es null, undefined o una cadena vacía, devuelve 0
-    return parseFloat(str.replace(",", "."));
-  }
+  useEffect(() => {
+    const traerInfo = async () => {
+      if (renderMovimiento) {
+        await obtenerMovimientos("Mp");
+        setRenderMovimiento(false);
+      }
+    };
+    traerInfo();
+  }, [renderMovimiento]);
 
   useEffect(() => {
-    let total = 0;
-
-    movimientos.forEach((movimiento) => {
-      if (movimiento.tipo == "Ingreso" && movimiento.entidad == "Mp") {
-        total += parseDecimal(movimiento.precioNeto);
-      }
-    });
-    setTotalIngresos(total.toFixed(2));
+    const traerInfo = async () => {
+      await obtenerDashEntidad("Mp");
+    };
+    traerInfo();
   }, []);
 
   useEffect(() => {
-    let totalG = 0;
-
-    movimientos.forEach((movimiento) => {
-      if (movimiento.tipo === "Gasto" && movimiento.entidad === "Mp") {
-        totalG += parseDecimal(movimiento.precioNeto);
+    const traerInfo = async () => {
+      if (renderMovimiento) {
+        await obtenerDashEntidad("Mp");
+        setRenderMovimiento(false);
       }
-    });
-    setTotalGastos(totalG.toFixed(2));
-    setCalculoTotal(true);
-  }, []);
+    };
+    traerInfo();
+  }, [renderMovimiento]);
 
-  useEffect(() => {
-    if (calculoTotal) {
-      let totalB = parseDecimal(totalIngresos) - parseDecimal(totalGastos);
-      setTotalDisponible(totalB.toFixed(2));
-      setCalculoTotal(false);
-    }
-  }, [calculoTotal]);
+  const handleF = (e) => {
+    e.preventDefault();
+    setEntidadFiltrar("Mp");
+    handleFiltro();
+  };
 
   return (
     <>
@@ -107,7 +116,9 @@ const ListadoMercadoPago = () => {
           icon={<ArrowTrendingDownIcon />}
           footer={
             <Typography className="text-center font-normal text-blue-gray-600">
-              <strong className="text-red-500">$ {totalGastos} </strong>
+              <strong className="text-red-500">
+                $ {dataDashEntidad.gastado ? dataDashEntidad.gastado : "-"}{" "}
+              </strong>
             </Typography>
           }
         />
@@ -117,7 +128,9 @@ const ListadoMercadoPago = () => {
           icon={<ArrowTrendingUpIcon />}
           footer={
             <Typography className="text-center font-normal text-blue-gray-600">
-              <strong className="text-green-500">$ {totalIngresos} </strong>
+              <strong className="text-green-500">
+                $ {dataDashEntidad.ingresos ? dataDashEntidad.ingresos : "-"}{" "}
+              </strong>
             </Typography>
           }
         />
@@ -128,7 +141,8 @@ const ListadoMercadoPago = () => {
           footer={
             <Typography className="text-center font-normal text-blue-gray-600">
               <strong className=" text-blue-500">
-                $ {totalDisponible ? totalDisponible : "-"}{" "}
+                ${" "}
+                {dataDashEntidad.disponible ? dataDashEntidad.disponible : "-"}{" "}
               </strong>
             </Typography>
           }
@@ -136,11 +150,17 @@ const ListadoMercadoPago = () => {
       </div>
 
       <ToastContainer pauseOnFocusLoss={false} />
-
+      <div className=" mr-4 mt-8 flex justify-between">
+        <Typography className="ml-4 font-bold">Listado Mercado Pago</Typography>
+        <div className="flex">
+          <ArrowPathIcon className="mr-4 h-8 w-8 hover:cursor-pointer" />
+          <FunnelIcon
+            className="h-8 w-8 text-gray-700 hover:cursor-pointer hover:text-gray-400"
+            onClick={(e) => handleF(e)}
+          />
+        </div>
+      </div>
       <div className="mb-4 mt-8 grid grid-cols-1 gap-6  xl:grid-cols-3">
-        <Typography className="ml-4  font-bold">
-          Listado Mercado Pago
-        </Typography>
         <Card className="overflow-hidden xl:col-span-3">
           <CardBody className="overflow-x-scroll px-0 pb-2 pt-0 text-center">
             <div className="max-h-[78vh] overflow-y-auto">
@@ -157,7 +177,7 @@ const ListadoMercadoPago = () => {
                     ].map((el) => (
                       <th
                         key={el}
-                        className="border-b border-blue-gray-50 px-6 py-3 text-left"
+                        className="border-b border-blue-gray-50 px-6 py-3 text-center"
                       >
                         <Typography
                           variant="small"
@@ -199,7 +219,7 @@ const ListadoMercadoPago = () => {
                             <>
                               <tr key={_id}>
                                 <td className={className}>
-                                  <div className="flex items-center gap-4">
+                                  <div className="flex items-center justify-center gap-4">
                                     <Typography
                                       variant="small"
                                       color="blue-gray"
@@ -247,14 +267,9 @@ const ListadoMercadoPago = () => {
                                   </Typography>
                                 </td>
                                 <td className={className}>
-                                  <Typography
-                                    variant="small"
-                                    className="mx-2 flex text-xs font-medium text-blue-gray-600"
-                                  >
-                                    <Button
-                                      color="gradient"
-                                      className="items-center gap-4 px-6 capitalize"
-                                      fullWidth
+                                  <div className="flex items-center justify-center gap-4">
+                                    <EyeIcon
+                                      className="h-8 w-8 hover:cursor-pointer"
                                       onClick={(e) =>
                                         handleClick(
                                           e,
@@ -268,15 +283,8 @@ const ListadoMercadoPago = () => {
                                           precioNeto
                                         )
                                       }
-                                    >
-                                      <Typography
-                                        color="inherit"
-                                        className="font-medium capitalize"
-                                      >
-                                        editar
-                                      </Typography>
-                                    </Button>
-                                  </Typography>
+                                    />
+                                  </div>
                                 </td>
                               </tr>
                             </>
@@ -293,6 +301,8 @@ const ListadoMercadoPago = () => {
           </CardBody>
         </Card>
         {modalEditarMovimiento ? <ModalEditarMovimientos /> : ""}
+        {modalFiltrar ? <ModalFiltrarListados /> : null}
+        <Cargando />
       </div>
     </>
   );

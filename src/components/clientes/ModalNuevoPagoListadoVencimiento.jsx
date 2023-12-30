@@ -1,40 +1,57 @@
 import { Fragment, useState, useEffect } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-import useClientes from "@/hooks/useClientes";
+import useContable from "@/hooks/useContable";
 import { ToastContainer, toast } from "react-toastify";
-import { Checkbox } from "@material-tailwind/react";
-import clienteAxios from "@/configs/clinteAxios";
-import { ArrowLeftCircleIcon } from "@heroicons/react/24/solid";
+import useClientes from "@/hooks/useClientes";
+import useProveedores from "@/hooks/useProveedores";
+import { input } from "@material-tailwind/react";
 
-const ModalNuevoPlan = () => {
+const ModalNuevoPagoListadoVencimiento = () => {
   const {
-    handleModalNuevoPlan,
-    modalNuevoPlan,
-    handleCloseModalNuevoPlan,
-    nombrePlan,
-    setNombrePlan,
-    descripcionPlan,
-    setDescripcionPlan,
-    horasSalas,
-    setHorasSalas,
-    precioPlan,
-    setPrecioPlan,
-    nuevoPlan,
-    actualizarListadoPLanes,
-    setActualizarListadoPLanes,
-  } = useClientes();
+    handleModalNuevoMovimiento,
+    entidad,
+    setEntidad,
+    tipo,
+    idProveedor,
+    idCliente,
+    descripcion,
+    setDescripcion,
+    precioNeto,
+    setPrecioNeto,
+    nuevoGasto,
+    setRenderMovimiento,
+    nuevoPagoCliente,
+  } = useContable();
 
   useEffect(() => {
-    setNombrePlan("");
-    setDescripcionPlan("");
-    setHorasSalas("");
-    setPrecioPlan("");
+    const traerData = async () => {
+      await obtenerProveedores();
+    };
+    traerData();
   }, []);
 
+  useEffect(() => {
+    const traerData = async () => {
+      await obtenerClientes();
+    };
+    traerData();
+  }, []);
+
+  const { obtenerProveedores } = useProveedores();
+
+  const {
+    obtenerClientes,
+    handlePagoVencimiento,
+    modalPagoListado,
+    nombrePago,
+    actualizarListadoVencimientos,
+    setActualizarListadoVencimientos,
+  } = useClientes();
+
+  //Comprueba que todos los campos esten ok, y de ser asi pasa a consultar si el cuit no corresponde a un usuario ya registrado
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if ([nombrePlan, descripcionPlan, horasSalas, precioPlan].includes("")) {
+    if ([precioNeto, descripcion, entidad].includes("")) {
       toast("⚠️ Todos los campos son obligatorios", {
         position: "top-right",
         autoClose: 1500,
@@ -48,31 +65,25 @@ const ModalNuevoPlan = () => {
       return;
     }
 
-    await nuevoPlan({
-      nombre: nombrePlan,
-      descripcion: descripcionPlan,
-      horasSalas: horasSalas,
-      precio: precioPlan,
+    await nuevoPagoCliente({
+      entidad: entidad,
+      tipo: "Ingreso",
+      descripcion: descripcion,
+      precioNeto: precioNeto,
+      cliente: idCliente,
     });
-
+    setActualizarListadoVencimientos(true);
     setTimeout(() => {
-      handleModalNuevoPlan();
-      setActualizarListadoPLanes(true);
-      setNombrePlan("");
-      setDescripcionPlan("");
-      setHorasSalas("");
-      setPrecioPlan("");
-    }, 1000);
-
-    // validarCuit(cuit);
+      handlePagoVencimiento();
+    }, 600);
   };
 
   return (
-    <Transition.Root show={modalNuevoPlan} as={Fragment}>
+    <Transition.Root show={modalPagoListado} as={Fragment}>
       <Dialog
         as="div"
         className="fixed inset-0 z-10 overflow-y-auto"
-        onClose={handleModalNuevoPlan}
+        onClose={handlePagoVencimiento}
       >
         <div className="flex min-h-screen items-end justify-center px-4 pb-20 pt-4 text-center sm:block sm:p-0">
           <ToastContainer pauseOnFocusLoss={false} />
@@ -111,7 +122,7 @@ const ModalNuevoPlan = () => {
                 <button
                   type="button"
                   className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                  onClick={handleCloseModalNuevoPlan}
+                  onClick={handlePagoVencimiento}
                 >
                   <span className="sr-only">Cerrar</span>
                   <svg
@@ -135,26 +146,46 @@ const ModalNuevoPlan = () => {
                     as="h3"
                     className="text-xl font-bold leading-6 text-gray-900"
                   >
-                    Nuevo Plan
+                    Registrar Pago
                   </Dialog.Title>
 
                   <form className="mx-2 my-2" onSubmit={handleSubmit}>
                     <div className="mb-1">
                       <label
                         className="text-sm font-bold uppercase text-gray-700"
-                        htmlFor="nombre"
+                        htmlFor="preciof"
                       >
-                        Nombre
+                        Cliente
                       </label>
                       <input
-                        id="nombre"
+                        id="preciof"
                         type="text"
-                        placeholder="Nombre del plan"
+                        placeholder="Nombre"
                         className="mt-2 w-full rounded-md border-2 p-2 placeholder-gray-400"
-                        value={nombrePlan}
-                        onChange={(e) => setNombrePlan(e.target.value)}
+                        value={nombrePago}
+                        disabled={true}
                       />
                     </div>
+                    <div className="mb-2">
+                      <label
+                        className="text-sm font-bold uppercase text-gray-700"
+                        htmlFor="cantidad"
+                      >
+                        Por donde pago?
+                      </label>
+                      <select
+                        id="cantidad"
+                        className="mt-2 w-full rounded-md border-2 p-2 placeholder-gray-400"
+                        value={entidad}
+                        onChange={(e) => setEntidad(e.target.value)}
+                      >
+                        <option value="">--Seleccionar--</option>
+                        <option value="Banco">Banco</option>
+                        <option value="Mp">Mercado Pago</option>
+                        <option value="Efectivo">Efectivo</option>
+                      </select>
+                    </div>
+
                     <div className="mb-1">
                       <label
                         className="text-sm font-bold uppercase text-gray-700"
@@ -162,51 +193,42 @@ const ModalNuevoPlan = () => {
                       >
                         Descripcion
                       </label>
-                      <textarea
-                        id="descripcion"
-                        type="text"
-                        placeholder="Descripcion del plan "
+                      <select
+                        id="cantidad"
                         className="mt-2 w-full rounded-md border-2 p-2 placeholder-gray-400"
-                        value={descripcionPlan}
-                        onChange={(e) => setDescripcionPlan(e.target.value)}
-                      />
+                        value={descripcion}
+                        onChange={(e) => setDescripcion(e.target.value)}
+                      >
+                        <option value="">--Seleccionar--</option>
+                        <option value="Pase Diario">Pase Diario</option>
+                        <option value="Membresia">Membresia</option>
+                        <option value="Alquiler de Sala">
+                          Alquiler de Sala
+                        </option>
+                        <option value="otro">Otro</option>
+                      </select>
                     </div>
+
                     <div className="mb-1">
                       <label
                         className="text-sm font-bold uppercase text-gray-700"
-                        htmlFor="horas"
+                        htmlFor="preciof"
                       >
-                        Horas de sala
+                        Importe
                       </label>
                       <input
-                        id="horas"
+                        id="preciof"
                         type="text"
-                        placeholder="Horas"
+                        placeholder="Precio Neto"
                         className="mt-2 w-full rounded-md border-2 p-2 placeholder-gray-400"
-                        value={horasSalas}
-                        onChange={(e) => setHorasSalas(e.target.value)}
-                      />
-                    </div>
-                    <div className="mb-3">
-                      <label
-                        className="text-sm font-bold uppercase text-gray-700"
-                        htmlFor="precio"
-                      >
-                        Precio
-                      </label>
-                      <input
-                        id="precio"
-                        type="text"
-                        placeholder="Precio del plan"
-                        className="mt-2 w-full rounded-md border-2 p-2 placeholder-gray-400"
-                        value={precioPlan}
-                        onChange={(e) => setPrecioPlan(e.target.value)}
+                        value={precioNeto}
+                        onChange={(e) => setPrecioNeto(e.target.value)}
                       />
                     </div>
 
                     <input
                       type="submit"
-                      className="w-full cursor-pointer rounded bg-blue-600 p-3 text-sm font-bold uppercase text-white transition-colors hover:bg-blue-300"
+                      className="mt-3 w-full cursor-pointer rounded bg-blue-600 p-3 text-sm font-bold uppercase text-white transition-colors hover:bg-blue-300"
                       value={"Guardar"}
                     />
                   </form>
@@ -220,4 +242,4 @@ const ModalNuevoPlan = () => {
   );
 };
 
-export default ModalNuevoPlan;
+export default ModalNuevoPagoListadoVencimiento;

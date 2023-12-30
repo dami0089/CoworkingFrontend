@@ -281,7 +281,7 @@ export function Profile() {
                       details={{
                         Nombre: `${editarCliente.nombre}`,
                         "Telefono Corporativo": `${
-                          editarCliente.telefono ? editarCliente.telefono : ""
+                          editarCliente.celular ? editarCliente.celular : ""
                         }`,
                         "Email Factura": `${editarCliente.mailFactura}`,
                         Direccion: `${editarCliente.domicilio}`,

@@ -111,7 +111,7 @@ const RegistrarClientes = () => {
                 <video ref={videoRef} className="h-full w-full"></video>
               ) : (
                 <img
-                  src="../../../public/img/scan.svg"
+                  src="/img/scan.svg"
                   alt="Placeholder SVG"
                   className="mb-auto h-2/3 w-2/3"
                 />

@@ -7,14 +7,20 @@ import { formatearFecha } from "@/helpers/formatearFecha";
 import ModalEditarMovimientos from "./ModalEditarMovimientos";
 import { StatisticsCard } from "@/widgets/cards";
 import {
+  ArrowDownCircleIcon,
+  ArrowPathIcon,
   ArrowTrendingDownIcon,
   ArrowTrendingUpIcon,
   BanknotesIcon,
   CreditCardIcon,
   CurrencyDollarIcon,
+  EyeIcon,
+  FunnelIcon,
   HomeModernIcon,
 } from "@heroicons/react/24/solid";
 import { ToastContainer } from "react-toastify";
+import ModalFiltrarListados from "./ModalFiltrarListados";
+import Cargando from "../deTodos/Cargando";
 
 const ListadoBanco = () => {
   const {
@@ -35,6 +41,12 @@ const ListadoBanco = () => {
     setPrecioNeto,
     renderMovimiento,
     setRenderMovimiento,
+    modalFiltrar,
+    handleFiltro,
+    entidadFiltrar,
+    setEntidadFiltrar,
+    dataDashEntidad,
+    obtenerDashEntidad,
   } = useContable();
 
   const [totalIngresos, setTotalIngresos] = useState("");
@@ -44,7 +56,14 @@ const ListadoBanco = () => {
 
   useEffect(() => {
     const traerInfo = async () => {
-      await obtenerMovimientos();
+      await obtenerMovimientos("Banco");
+    };
+    traerInfo();
+  }, []);
+
+  useEffect(() => {
+    const traerInfo = async () => {
+      await obtenerDashEntidad("Banco");
     };
     traerInfo();
   }, []);
@@ -52,7 +71,17 @@ const ListadoBanco = () => {
   useEffect(() => {
     const traerInfo = async () => {
       if (renderMovimiento) {
-        await obtenerMovimientos();
+        await obtenerDashEntidad("Banco");
+        setRenderMovimiento(false);
+      }
+    };
+    traerInfo();
+  }, [renderMovimiento]);
+
+  useEffect(() => {
+    const traerInfo = async () => {
+      if (renderMovimiento) {
+        await obtenerMovimientos("Banco");
         setRenderMovimiento(false);
       }
     };
@@ -79,41 +108,11 @@ const ListadoBanco = () => {
     handleModalEditarMovimiento();
   };
 
-  function parseDecimal(str) {
-    if (!str) return 0; // Si str es null, undefined o una cadena vacía, devuelve 0
-    return parseFloat(str.replace(",", "."));
-  }
-
-  useEffect(() => {
-    let total = 0;
-
-    movimientos.forEach((movimiento) => {
-      if (movimiento.tipo == "Ingreso" && movimiento.entidad == "Banco") {
-        total += parseDecimal(movimiento.precioNeto);
-      }
-    });
-    setTotalIngresos(total.toFixed(2));
-  }, []);
-
-  useEffect(() => {
-    let totalG = 0;
-
-    movimientos.forEach((movimiento) => {
-      if (movimiento.tipo === "Gasto" && movimiento.entidad === "Banco") {
-        totalG += parseDecimal(movimiento.precioNeto);
-      }
-    });
-    setTotalGastos(totalG.toFixed(2));
-    setCalculoTotal(true);
-  }, []);
-
-  useEffect(() => {
-    if (calculoTotal) {
-      let totalB = parseDecimal(totalIngresos) - parseDecimal(totalGastos);
-      setTotalDisponible(totalB.toFixed(2));
-      setCalculoTotal(false);
-    }
-  }, [calculoTotal]);
+  const handleF = (e) => {
+    e.preventDefault();
+    setEntidadFiltrar("Banco");
+    handleFiltro();
+  };
 
   return (
     <>
@@ -124,7 +123,9 @@ const ListadoBanco = () => {
           icon={<ArrowTrendingDownIcon />}
           footer={
             <Typography className="text-center font-normal text-blue-gray-600">
-              <strong className="text-red-500">$ {totalGastos} </strong>
+              <strong className="text-red-500">
+                $ {dataDashEntidad.gastado ? dataDashEntidad.gastado : "-"}{" "}
+              </strong>
             </Typography>
           }
         />
@@ -134,7 +135,9 @@ const ListadoBanco = () => {
           icon={<ArrowTrendingUpIcon />}
           footer={
             <Typography className="text-center font-normal text-blue-gray-600">
-              <strong className="text-green-500">$ {totalIngresos} </strong>
+              <strong className="text-green-500">
+                $ {dataDashEntidad.ingresos ? dataDashEntidad.ingresos : "-"}{" "}
+              </strong>
             </Typography>
           }
         />
@@ -144,16 +147,27 @@ const ListadoBanco = () => {
           icon={<HomeModernIcon />}
           footer={
             <Typography className="text-center font-normal text-blue-gray-600">
-              <strong className=" text-blue-500">$ {totalDisponible} </strong>
+              <strong className=" text-blue-500">
+                ${" "}
+                {dataDashEntidad.disponible ? dataDashEntidad.disponible : "-"}{" "}
+              </strong>
             </Typography>
           }
         />
       </div>
       <ToastContainer pauseOnFocusLoss={false} />
 
-      <div className="mb-4 mt-8 grid grid-cols-1 gap-6  xl:grid-cols-3">
+      <div className=" mr-4 mt-8 flex justify-between">
         <Typography className="ml-4 font-bold">Listado Banco</Typography>
-
+        <div className="flex">
+          <ArrowPathIcon className="mr-4 h-8 w-8 hover:cursor-pointer" />
+          <FunnelIcon
+            className="h-8 w-8 text-gray-700 hover:cursor-pointer hover:text-gray-400"
+            onClick={(e) => handleF(e)}
+          />
+        </div>
+      </div>
+      <div className="mb-4 mt-8 grid grid-cols-1 gap-6  xl:grid-cols-3">
         <Card className="overflow-hidden xl:col-span-3">
           <CardBody className="overflow-x-scroll px-0 pb-2 pt-0 text-center">
             <div className="max-h-[78vh] overflow-y-auto">
@@ -213,7 +227,7 @@ const ListadoBanco = () => {
                             <>
                               <tr key={_id}>
                                 <td className={className}>
-                                  <div className="flex items-center gap-4">
+                                  <div className="flex items-center justify-center gap-4">
                                     <Typography
                                       variant="small"
                                       color="blue-gray"
@@ -261,14 +275,9 @@ const ListadoBanco = () => {
                                   </Typography>
                                 </td>
                                 <td className={className}>
-                                  <Typography
-                                    variant="small"
-                                    className="mx-2 flex text-xs font-medium text-blue-gray-600"
-                                  >
-                                    <Button
-                                      color="gradient"
-                                      className="items-center gap-4 px-6 capitalize"
-                                      fullWidth
+                                  <div className="flex items-center justify-center gap-4">
+                                    <EyeIcon
+                                      className="h-8 w-8 hover:cursor-pointer"
                                       onClick={(e) =>
                                         handleClick(
                                           e,
@@ -281,15 +290,8 @@ const ListadoBanco = () => {
                                           precioNeto
                                         )
                                       }
-                                    >
-                                      <Typography
-                                        color="inherit"
-                                        className="font-medium capitalize"
-                                      >
-                                        editar
-                                      </Typography>
-                                    </Button>
-                                  </Typography>
+                                    />
+                                  </div>
                                 </td>
                               </tr>
                             </>
@@ -306,6 +308,8 @@ const ListadoBanco = () => {
           </CardBody>
         </Card>
         {modalEditarMovimiento ? <ModalEditarMovimientos /> : ""}
+        {modalFiltrar ? <ModalFiltrarListados /> : null}
+        <Cargando />
       </div>
     </>
   );

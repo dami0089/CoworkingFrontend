@@ -67,7 +67,7 @@ const ModalNuevaReservaSala = () => {
         className="fixed inset-0 z-50 overflow-y-auto"
         onClose={handleModalNuevaReserva}
       >
-        <div className="flex min-h-screen items-end justify-center px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+        <div className="flex min-h-screen items-end justify-center px-4 pb-20 pt-4 text-center sm:block sm:p-0">
           <ToastContainer pauseOnFocusLoss={false} />
 
           <Transition.Child
@@ -99,8 +99,8 @@ const ModalNuevaReservaSala = () => {
             leaveFrom="opacity-100 translate-y-0 sm:scale-100"
             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
           >
-            <div className="inline-block transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-xl sm:p-6 sm:align-middle">
-              <div className="absolute top-0 right-0 hidden pt-4 pr-4 sm:block">
+            <div className="inline-block transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-xl sm:p-6 sm:align-middle">
+              <div className="absolute right-0 top-0 hidden pr-4 pt-4 sm:block">
                 <button
                   type="button"
                   className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
@@ -123,7 +123,7 @@ const ModalNuevaReservaSala = () => {
               </div>
 
               <div className="sm:flex sm:items-start">
-                <div className="mt-3 w-full text-center sm:mt-0 sm:ml-0 sm:text-left">
+                <div className="mt-3 w-full text-center sm:ml-0 sm:mt-0 sm:text-left">
                   <Dialog.Title
                     as="h3"
                     className="text-xl font-bold leading-6 text-gray-900"
@@ -133,7 +133,7 @@ const ModalNuevaReservaSala = () => {
 
                   {/* Card for "cliente de coworking" */}
                   <div
-                    className="mt-5 mb-3 flex cursor-pointer items-center justify-between rounded-lg border p-6 transition hover:bg-gray-100"
+                    className="mb-3 mt-5 flex cursor-pointer items-center justify-between rounded-lg border p-6 transition hover:bg-gray-100"
                     onClick={(e) => handleReservaCliente()}
                   >
                     <h2 className="text-lg font-semibold">
@@ -147,7 +147,7 @@ const ModalNuevaReservaSala = () => {
                   </div>
 
                   {/* Card for "cliente de salas" */}
-                  <div className="mt-5 mb-3 flex cursor-pointer items-center justify-between rounded-lg border p-6 transition hover:bg-gray-100">
+                  <div className="mb-3 mt-5 flex cursor-pointer items-center justify-between rounded-lg border p-6 transition hover:bg-gray-100">
                     <h2 className="text-lg font-semibold">Cliente de Salas</h2>
                     <img
                       src={clienteSalas}
@@ -156,7 +156,7 @@ const ModalNuevaReservaSala = () => {
                     />
                   </div>
 
-                  <div className="mt-5 mb-3 flex cursor-pointer items-center justify-between rounded-lg border p-6 transition hover:bg-gray-100">
+                  <div className="mb-3 mt-5 flex cursor-pointer items-center justify-between rounded-lg border p-6 transition hover:bg-gray-100">
                     <h2 className="text-lg font-semibold">
                       Nuevo Cliente Salas
                     </h2>

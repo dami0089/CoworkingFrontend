@@ -1,18 +1,12 @@
-import {
-  Avatar,
-  Button,
-  Card,
-  CardBody,
-  Progress,
-  Tooltip,
-  Typography,
-} from "@material-tailwind/react";
+import { Card, CardBody, Typography } from "@material-tailwind/react";
 import React, { useEffect } from "react";
 import { projectsTableData } from "@/data";
 import useClientes from "@/hooks/useClientes";
 import { formatearFecha } from "@/helpers/formatearFecha";
-import { ArrowLeftCircleIcon, ArrowLeftIcon } from "@heroicons/react/24/solid";
+import { EyeIcon, PlusIcon } from "@heroicons/react/24/solid";
 import ModalModificarPlan from "./ModalModificarPlan";
+import ModalNuevoPlan from "./ModalNuevoPlan";
+import { ToastContainer } from "react-toastify";
 
 const Planes = () => {
   const {
@@ -21,6 +15,15 @@ const Planes = () => {
     handleModalModificarPlan,
     obtenerPlanes,
     modalModificarPlan,
+    handleModalNuevoPlan,
+    modalNuevoPlan,
+    actualizarListadoPLanes,
+    setActualizarListadoPLanes,
+    setModificarNombrePlan,
+    setModificarDescripcionPlan,
+    setModificarHorasSalas,
+    setModificarPrecioPlan,
+    setIdModificarPlan,
   } = useClientes();
 
   useEffect(() => {
@@ -30,17 +33,39 @@ const Planes = () => {
     mostrar();
   }, []);
 
-  // console.log(mostrarPlanes);
+  useEffect(() => {
+    const mostrar = async () => {
+      if (actualizarListadoPLanes) {
+        await obtenerPlanes();
+        setActualizarListadoPLanes(false);
+      }
+    };
+    mostrar();
+  }, [actualizarListadoPLanes]);
 
   const handleClick = async (id) => {
     obtenerPlan(id);
+
     handleModalModificarPlan();
+  };
+
+  const nuevoPlan = (e) => {
+    e.preventDefault();
+    handleModalNuevoPlan();
   };
 
   return (
     <>
+      <div className="mr-5 mt-8 flex items-center justify-between">
+        <Typography className="ml-5 font-bold">Planes Activos</Typography>
+        <PlusIcon
+          className="h-8 w-8  text-green-500 hover:cursor-pointer"
+          onClick={(e) => nuevoPlan(e)}
+        />
+      </div>
+      <ToastContainer pauseOnFocusLoss={false} />
+
       <div className="mb-4 mt-8 grid grid-cols-1 gap-6  xl:grid-cols-3">
-        <Typography className="ml-4 font-bold">Planes Activos</Typography>
         <Card className="overflow-hidden xl:col-span-3">
           <CardBody className="overflow-x-scroll px-0 pb-2 pt-0 text-center">
             <div className="max-h-[78vh] overflow-y-auto">
@@ -80,7 +105,7 @@ const Planes = () => {
                       return (
                         <tr key={nombre}>
                           <td className={className}>
-                            <div className="flex items-center gap-4">
+                            <div className="flex items-center justify-center gap-4">
                               <Typography
                                 variant="small"
                                 color="blue-gray"
@@ -115,31 +140,14 @@ const Planes = () => {
                             </Typography>
                           </td>
                           <td className={className}>
-                            <Typography
-                              variant="small"
-                              className="mx-2 flex text-xs font-medium text-blue-gray-600"
-                            >
-                              <Button
-                                color="gradient"
-                                className="items-center gap-4 px-6 capitalize"
-                                fullWidth
+                            <div className="flex items-center justify-center gap-4">
+                              <EyeIcon
+                                className="h-8 w-8 hover:cursor-pointer"
                                 onClick={(e) => {
                                   handleClick(_id);
                                 }}
-                              >
-                                <Typography
-                                  color="inherit"
-                                  className="font-medium capitalize"
-                                >
-                                  editar
-                                </Typography>
-                              </Button>
-                            </Typography>
-                            {/* <Progress
-                          value={fechaVencimiento}
-                          variant="gradient"
-                          className="h-1"
-                        /> */}
+                              />
+                            </div>
                           </td>
                         </tr>
                       );
@@ -151,6 +159,7 @@ const Planes = () => {
           </CardBody>
         </Card>
         {modalModificarPlan ? <ModalModificarPlan /> : ""}
+        {modalNuevoPlan ? <ModalNuevoPlan /> : null}
       </div>
     </>
   );

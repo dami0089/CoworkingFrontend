@@ -1,40 +1,51 @@
 import { Fragment, useState, useEffect } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-import useClientes from "@/hooks/useClientes";
+import useContable from "@/hooks/useContable";
 import { ToastContainer, toast } from "react-toastify";
 import { Checkbox } from "@material-tailwind/react";
 import clienteAxios from "@/configs/clinteAxios";
 import { ArrowLeftCircleIcon } from "@heroicons/react/24/solid";
+import useClientes from "@/hooks/useClientes";
+import useProveedores from "@/hooks/useProveedores";
+import useAuth from "@/hooks/useAuth";
 
-const ModalNuevoPlan = () => {
+const ModalFiltrarListados = () => {
   const {
-    handleModalNuevoPlan,
-    modalNuevoPlan,
-    handleCloseModalNuevoPlan,
-    nombrePlan,
-    setNombrePlan,
-    descripcionPlan,
-    setDescripcionPlan,
-    horasSalas,
-    setHorasSalas,
-    precioPlan,
-    setPrecioPlan,
-    nuevoPlan,
-    actualizarListadoPLanes,
-    setActualizarListadoPLanes,
-  } = useClientes();
+    handleFiltro,
+    modalFiltrar,
+    obtenerMovimientosFiltrados,
+    mostrarFiltro,
+    setMostrarFiltro,
+    entidadFiltrar,
+    setEntidadFiltrar,
+    mesFiltrar,
+    setMesFiltrar,
+    anoFiltrar,
+    setAnoFiltrar,
+    obtenerDashEntidad,
+    obtenerDashEntidadFiltrado,
+  } = useContable();
+
+  const { proveedores, obtenerProveedores } = useProveedores();
+
+  const { handleCargando } = useAuth();
 
   useEffect(() => {
-    setNombrePlan("");
-    setDescripcionPlan("");
-    setHorasSalas("");
-    setPrecioPlan("");
+    const traerData = async () => {
+      await obtenerProveedores();
+    };
+    traerData();
   }, []);
 
+  useEffect(() => {
+    const anio = new Date().getFullYear(); // Obtiene el año actual
+    setAnoFiltrar(anio);
+  }, []);
+
+  //Comprueba que todos los campos esten ok, y de ser asi pasa a consultar si el cuit no corresponde a un usuario ya registrado
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if ([nombrePlan, descripcionPlan, horasSalas, precioPlan].includes("")) {
+    if ([mesFiltrar, anoFiltrar].includes("")) {
       toast("⚠️ Todos los campos son obligatorios", {
         position: "top-right",
         autoClose: 1500,
@@ -48,31 +59,26 @@ const ModalNuevoPlan = () => {
       return;
     }
 
-    await nuevoPlan({
-      nombre: nombrePlan,
-      descripcion: descripcionPlan,
-      horasSalas: horasSalas,
-      precio: precioPlan,
-    });
+    handleCargando();
+    await obtenerMovimientosFiltrados(entidadFiltrar, mesFiltrar, anoFiltrar);
+    await obtenerDashEntidadFiltrado(entidadFiltrar, mesFiltrar, anoFiltrar);
+    handleFiltro();
+
+    handleCargando();
 
     setTimeout(() => {
-      handleModalNuevoPlan();
-      setActualizarListadoPLanes(true);
-      setNombrePlan("");
-      setDescripcionPlan("");
-      setHorasSalas("");
-      setPrecioPlan("");
+      setAnoFiltrar("");
+      setMesFiltrar("");
+      setEntidadFiltrar("");
     }, 1000);
-
-    // validarCuit(cuit);
   };
 
   return (
-    <Transition.Root show={modalNuevoPlan} as={Fragment}>
+    <Transition.Root show={modalFiltrar} as={Fragment}>
       <Dialog
         as="div"
         className="fixed inset-0 z-10 overflow-y-auto"
-        onClose={handleModalNuevoPlan}
+        onClose={handleFiltro}
       >
         <div className="flex min-h-screen items-end justify-center px-4 pb-20 pt-4 text-center sm:block sm:p-0">
           <ToastContainer pauseOnFocusLoss={false} />
@@ -111,7 +117,7 @@ const ModalNuevoPlan = () => {
                 <button
                   type="button"
                   className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                  onClick={handleCloseModalNuevoPlan}
+                  onClick={handleFiltro}
                 >
                   <span className="sr-only">Cerrar</span>
                   <svg
@@ -135,72 +141,54 @@ const ModalNuevoPlan = () => {
                     as="h3"
                     className="text-xl font-bold leading-6 text-gray-900"
                   >
-                    Nuevo Plan
+                    Filtrar
                   </Dialog.Title>
 
                   <form className="mx-2 my-2" onSubmit={handleSubmit}>
-                    <div className="mb-1">
+                    <div className="mb-2">
                       <label
                         className="text-sm font-bold uppercase text-gray-700"
-                        htmlFor="nombre"
+                        htmlFor="cantidad"
                       >
-                        Nombre
+                        Mes
                       </label>
-                      <input
-                        id="nombre"
-                        type="text"
-                        placeholder="Nombre del plan"
+                      <select
+                        id="cantidad"
                         className="mt-2 w-full rounded-md border-2 p-2 placeholder-gray-400"
-                        value={nombrePlan}
-                        onChange={(e) => setNombrePlan(e.target.value)}
-                      />
+                        value={mesFiltrar}
+                        onChange={(e) => setMesFiltrar(e.target.value)}
+                      >
+                        <option value="">--Seleccionar--</option>
+                        <option value="1">Enero</option>
+                        <option value="2">Febrero</option>
+                        <option value="3">Marzo</option>
+                        <option value="4">Abril</option>
+                        <option value="5">Mayo</option>
+                        <option value="6">Junio</option>
+                        <option value="7">Julio</option>
+                        <option value="8">Agosto</option>
+                        <option value="9">Septiembre</option>
+                        <option value="10">Octubre</option>
+                        <option value="11">Noviembre</option>
+                        <option value="12">Diciembre</option>
+                      </select>
                     </div>
                     <div className="mb-1">
                       <label
                         className="text-sm font-bold uppercase text-gray-700"
-                        htmlFor="descripcion"
+                        htmlFor="anio"
                       >
-                        Descripcion
-                      </label>
-                      <textarea
-                        id="descripcion"
-                        type="text"
-                        placeholder="Descripcion del plan "
-                        className="mt-2 w-full rounded-md border-2 p-2 placeholder-gray-400"
-                        value={descripcionPlan}
-                        onChange={(e) => setDescripcionPlan(e.target.value)}
-                      />
-                    </div>
-                    <div className="mb-1">
-                      <label
-                        className="text-sm font-bold uppercase text-gray-700"
-                        htmlFor="horas"
-                      >
-                        Horas de sala
+                        Seleccione el Año
                       </label>
                       <input
-                        id="horas"
-                        type="text"
-                        placeholder="Horas"
-                        className="mt-2 w-full rounded-md border-2 p-2 placeholder-gray-400"
-                        value={horasSalas}
-                        onChange={(e) => setHorasSalas(e.target.value)}
-                      />
-                    </div>
-                    <div className="mb-3">
-                      <label
-                        className="text-sm font-bold uppercase text-gray-700"
-                        htmlFor="precio"
-                      >
-                        Precio
-                      </label>
-                      <input
-                        id="precio"
-                        type="text"
-                        placeholder="Precio del plan"
-                        className="mt-2 w-full rounded-md border-2 p-2 placeholder-gray-400"
-                        value={precioPlan}
-                        onChange={(e) => setPrecioPlan(e.target.value)}
+                        id="anio"
+                        type="number"
+                        placeholder="Año"
+                        min="1900"
+                        max="2100"
+                        className="mb-4 mt-2 w-full rounded-md border-2 p-2 placeholder-gray-400"
+                        value={anoFiltrar}
+                        onChange={(e) => setAnoFiltrar(e.target.value)}
                       />
                     </div>
 
@@ -220,4 +208,4 @@ const ModalNuevoPlan = () => {
   );
 };
 
-export default ModalNuevoPlan;
+export default ModalFiltrarListados;

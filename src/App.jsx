@@ -29,6 +29,7 @@ import ListadoReservasSalaMadrid from "./components/salas/ListadoReservasSalaMad
 import ListadoReservasSalaParis from "./components/salas/ListadoReservasSalaParis";
 import ListadoDeProveedores from "./components/proveedores/ListadodeProveedores";
 import ProfileProveedor from "./components/proveedores/ProfileProveedor";
+import ListadoAsistenciasCliente from "./components/clientes/ListadoAsistenciasCliente";
 
 //TODO:FALTA AGREGAR EL BAR AL MENU
 function App() {
@@ -50,6 +51,10 @@ function App() {
         <Route index element={<Clientes />} />
         <Route path="planes-activos" element={<Planes />} />
         <Route path="asistencias" element={<ListadodeAsistencias />} />
+        <Route
+          path="asistencias-cliente"
+          element={<ListadoAsistenciasCliente />}
+        />
         <Route
           path="proximos-vencimientos"
           element={<ListadodeProximosVencimientos />}

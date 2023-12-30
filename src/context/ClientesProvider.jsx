@@ -100,11 +100,34 @@ const ClientesProvider = ({ children }) => {
     useState(false);
 
   const [nuevoUsuarioAdmin, setNuevoUsuarioAdmin] = useState(false);
+  const [actualizoListadoAsistencias, setActualizoListadoAsistencias] =
+    useState(false);
 
   const [idClienteAEditar, setIdClienteAEditar] = useState("");
   const [rol, setRol] = useState("");
+  const [nombrePago, setNombrePago] = useState("");
 
   const [telefono, setTelefono] = useState("");
+  const [actualizarListadoPLanes, setActualizarListadoPLanes] = useState(false);
+
+  const [nombreClienteListadoAsistencias, setNombreClienteListadoAsistencias] =
+    useState("");
+  const [
+    apellidoClienteListadoAsistencias,
+    setApellidoClienteListadoAsistencias,
+  ] = useState("");
+
+  const [idClienteListadoAsistencias, setIdClienteListadoAsistencias] =
+    useState("");
+
+  const [modalPagoListado, setModalPagoListado] = useState(false);
+
+  const [actualizarListadoVencimientos, setActualizarListadoVencimientos] =
+    useState(false);
+
+  const handlePagoVencimiento = () => {
+    setModalPagoListado(!modalPagoListado);
+  };
 
   const handleModalNuevoUsuario = () => {
     setModalNuevoUsuario(!modalNuevoUsuario);
@@ -581,16 +604,14 @@ const ClientesProvider = ({ children }) => {
         progress: undefined,
         theme: "light",
       });
-      setTimeout(() => {
-        setTipo("");
-        setPlanes("");
-        setNombre("");
-        setCuit("");
-        setFechaVencimiento("");
-        setDomicilio("");
-        setEmailFactura("");
-        setCantidad("");
-      }, 3000);
+      setTipo("");
+      setPlanes("");
+      setNombre("");
+      setCuit("");
+      setFechaVencimiento("");
+      setDomicilio("");
+      setEmailFactura("");
+      setCantidad("");
     } catch (error) {
       toast.error(error, {
         position: "top-right",
@@ -1261,7 +1282,7 @@ const ClientesProvider = ({ children }) => {
       );
 
       //Mostrar la alerta
-      toast.success("Asistencia Eliminada correctamente", {
+      toast.success(data.msg, {
         position: "top-right",
         autoClose: 1000,
         hideProgressBar: false,
@@ -1272,7 +1293,7 @@ const ClientesProvider = ({ children }) => {
         theme: "light",
       });
     } catch (error) {
-      toast.error(error, {
+      toast.error(error.response.data.msg, {
         position: "top-right",
         autoClose: 1500,
         hideProgressBar: false,
@@ -1400,6 +1421,151 @@ const ClientesProvider = ({ children }) => {
       setVisitas(data);
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  const eliminarPLan = async (id) => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      const { data } = await clienteAxios.post(
+        `/planes/eliminar-plan/${id}`,
+        {},
+        config
+      );
+
+      //Mostrar la alerta
+      toast.success(data.msg, {
+        position: "top-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    } catch (error) {
+      toast.error(error.response.data.msg, {
+        position: "top-right",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+  };
+
+  const [asistenciaCliente, setAsistenciaCliente] = useState([]);
+
+  const obtenerAsistenciasPorUsuario = async (id) => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      const { data } = await clienteAxios(
+        `/clientes/obtener-asistencia-usuarios/${id}`,
+        config
+      );
+      setAsistenciaCliente(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const recordarVencimiento = async (id) => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      const { data } = await clienteAxios.post(
+        `/clientes/recordar-vencimiento/${id}`,
+        {},
+        config
+      );
+
+      toast.success(data.msg, {
+        position: "top-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    } catch (error) {
+      toast.error(error.response.data.msg, {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+  };
+
+  const recordarVencimientoWhatsapp = async (id) => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      const { data } = await clienteAxios.post(
+        `/clientes/recordar-vencimiento-whats/${id}`,
+        {},
+        config
+      );
+
+      toast.success(data.msg, {
+        position: "top-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    } catch (error) {
+      toast.error(error.response.data.msg, {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
     }
   };
 
@@ -1608,6 +1774,28 @@ const ClientesProvider = ({ children }) => {
         rol,
         setRol,
         guardarUsuarioAdmin,
+        actualizarListadoPLanes,
+        setActualizarListadoPLanes,
+        setIdModificarPlan,
+        eliminarPLan,
+        nombreClienteListadoAsistencias,
+        setNombreClienteListadoAsistencias,
+        apellidoClienteListadoAsistencias,
+        setApellidoClienteListadoAsistencias,
+        idClienteListadoAsistencias,
+        setIdClienteListadoAsistencias,
+        asistenciaCliente,
+        obtenerAsistenciasPorUsuario,
+        actualizoListadoAsistencias,
+        setActualizoListadoAsistencias,
+        recordarVencimiento,
+        recordarVencimientoWhatsapp,
+        handlePagoVencimiento,
+        modalPagoListado,
+        nombrePago,
+        setNombrePago,
+        actualizarListadoVencimientos,
+        setActualizarListadoVencimientos,
       }}
     >
       {children}

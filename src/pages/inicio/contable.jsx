@@ -31,6 +31,8 @@ export function Contable() {
     modalNuevoMovimiento,
     renderMovimiento,
     setRenderMovimiento,
+    dashContable,
+    obtenerDashContable,
   } = useContable();
 
   const [mostrarTotalBanco, setMostrarTotalBanco] = useState(0);
@@ -41,8 +43,7 @@ export function Contable() {
 
   useEffect(() => {
     const traerInfo = async () => {
-      await obtenerMovimientos();
-      setRenderizoMovimientos(true);
+      await obtenerDashContable();
     };
     traerInfo();
   }, []);
@@ -50,89 +51,13 @@ export function Contable() {
   useEffect(() => {
     const traerInfo = async () => {
       if (renderMovimiento) {
-        await obtenerMovimientos();
+        await obtenerDashContable();
         setRenderMovimiento(false);
         setRenderizoMovimientos(true);
       }
     };
     traerInfo();
   }, [renderMovimiento]);
-
-  useEffect(() => {
-    if (renderizoMovimientos) {
-      let precio = 0;
-      let precioG = 0;
-      let total = 0;
-      let totalG = 0;
-      let totalB = 0;
-      movimientos.forEach((movimiento) => {
-        if (movimiento.tipo == "Ingreso" && movimiento.entidad == "Banco") {
-          precio = parseFloat(movimiento.precioNeto);
-          total += precio;
-        }
-        if (movimiento.tipo == "Gasto" && movimiento.entidad == "Banco") {
-          precioG = parseFloat(movimiento.precioNeto);
-          totalG += precioG;
-          // setMovimientoGastoBanco(total);
-        }
-      });
-
-      totalB = total - totalG;
-      setMostrarTotalBanco(totalB.toFixed(2));
-
-      setRenderizoMovimientos(false);
-    }
-  }, [renderizoMovimientos]);
-
-  useEffect(() => {
-    if (renderizoMovimientos) {
-      let precio = 0;
-      let precioG = 0;
-      let total = 0;
-      let totalG = 0;
-      let totalB = 0;
-      movimientos.forEach((movimiento) => {
-        if (movimiento.tipo == "Ingreso" && movimiento.entidad == "Mp") {
-          precio = parseFloat(movimiento.precioNeto);
-          total += precio;
-        }
-        if (movimiento.tipo == "Gasto" && movimiento.entidad == "Mp") {
-          precioG = parseFloat(movimiento.precioNeto);
-          totalG += precioG;
-          // setMovimientoGastoBanco(total);
-        }
-      });
-
-      totalB = total - totalG;
-      setMostrarTotalMP(totalB.toFixed(2));
-      setRenderizoMovimientos(false);
-    }
-  }, [renderizoMovimientos]);
-
-  useEffect(() => {
-    if (renderizoMovimientos) {
-      let precio = 0;
-      let precioG = 0;
-      let total = 0;
-      let totalG = 0;
-      let totalB = 0;
-      movimientos.forEach((movimiento) => {
-        if (movimiento.tipo == "Ingreso" && movimiento.entidad == "Efectivo") {
-          precio = parseFloat(movimiento.precioNeto);
-          total += precio;
-        }
-        if (movimiento.tipo == "Gasto" && movimiento.entidad == "Efectivo") {
-          precioG = parseFloat(movimiento.precioNeto);
-          totalG += precioG;
-          // setMovimientoGastoBanco(total);
-        }
-      });
-
-      totalB = total - totalG;
-      setMostrarTotalEfectivo(totalB.toFixed(2));
-      setRenderizoMovimientos(false);
-    }
-  }, [renderizoMovimientos]);
 
   const handleMovimiento = () => {
     handleModalNuevoMovimiento();
@@ -164,7 +89,9 @@ export function Contable() {
           icon={<BanknotesIcon />}
           footer={
             <Typography className="font-normal text-blue-gray-600">
-              <strong className="text-green-500">$ {mostrarTotalBanco} </strong>
+              <strong className="text-green-500">
+                $ {dashContable.banco ? dashContable.banco : "-"}{" "}
+              </strong>
             </Typography>
           }
         />
@@ -174,7 +101,9 @@ export function Contable() {
           icon={<CreditCardIcon />}
           footer={
             <Typography className="font-normal text-blue-gray-600">
-              <strong className="text-green-500">$ {mostrarTotalMP} </strong>
+              <strong className="text-green-500">
+                $ {dashContable.Mp ? dashContable.Mp : "-"}{" "}
+              </strong>
             </Typography>
           }
         />
@@ -185,7 +114,7 @@ export function Contable() {
           footer={
             <Typography className="font-normal text-blue-gray-600">
               <strong className="text-green-500">
-                $ {mostrarTotalEfectivo}{" "}
+                $ {dashContable.efectivo ? dashContable.efectivo : "-"}{" "}
               </strong>
             </Typography>
           }

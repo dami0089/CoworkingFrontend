@@ -8,10 +8,10 @@ export const formatearFecha = (fecha) => {
       console.error("Fecha inválida:", fecha);
       return "";
     }
-    // Formatear la fecha para que sea compatible con el input de tipo 'date'
-    return format(parsedDate, "yyyy-MM-dd");
+    // Formatear la fecha en el formato dd/mm/yyyy
+    return format(parsedDate, "dd/MM/yyyy", { locale: es });
   } catch (error) {
-    console.error("Error al formatear fecha para input:", error);
+    console.error("Error al formatear fecha:", error);
     return "";
   }
 };
